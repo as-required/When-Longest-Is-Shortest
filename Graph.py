@@ -182,3 +182,7 @@ class Graph:
         plt.title("r = {}".format(self._radius))
         plt.savefig("plt_graph", dpi = 500, bbox_inches = "tight")
         plt.show()   
+
+    def triangle(self):
+        # Function to compute triangle inequality for pairs of edges.
+        
