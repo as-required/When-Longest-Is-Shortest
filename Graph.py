@@ -173,6 +173,8 @@ class Graph:
         
     def draw_plt(self):
         
+        plt.figure(figsize=(5,5))
+        
         for i in range(len(self._x_coords)):
     
             plt.plot(self._x_coords[i], self._y_coords[i], marker = 'o')
@@ -180,6 +182,3 @@ class Graph:
         plt.title("r = {}".format(self._radius))
         plt.savefig("plt_graph", dpi = 500, bbox_inches = "tight")
         plt.show()   
-        
-        
-    
