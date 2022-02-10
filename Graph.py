@@ -184,5 +184,7 @@ class Graph:
         plt.show()   
 
     def triangle(self):
-        # Function to compute triangle inequality for pairs of edges.
+        # Function to compute triangle inequality for sets of three nodes.
+        # |z| = |x+y| < |x|+|y|, where |z| is the hypotenuse of the triangle.
+        
         
