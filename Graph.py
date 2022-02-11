@@ -194,11 +194,15 @@ class Graph:
 		for j in range (self._x_coords-1):
 			for k in range(self._x_coords-2):
                     
-				corners = [ [ self._x_coords[i] , self._y_coords[i] ] , [ self._x_coords[j] , self._y_coords[j] ] , [ self._x_coords[k] , self._y_coords[k] ] ]
+				corners = [ [ self._x_coords[i] , self._y_coords[i] ] , 
+					    [ self._x_coords[j] , self._y_coords[j] ] , 
+					    [ self._x_coords[k] , self._y_coords[k] ] ]
 				lengths = [ ((self._x_coords[j]-self._x_coords[i])**2 + (self._y_coords[j]-self._y_coords[i])**2)**(1/2), 
-                            			((self._x_coords[k]-self._x_coords[j])**2 + (self._y_coords[k]-self._y_coords[j])**2)**(1/2), 
-                            			((self._x_coords[i]-self._x_coords[k])**2 + (self._y_coords[i]-self._y_coords[k])**2)**(1/2) ]
+                            		    ((self._x_coords[k]-self._x_coords[j])**2 + (self._y_coords[k]-self._y_coords[j])**2)**(1/2), 
+                            		    ((self._x_coords[i]-self._x_coords[k])**2 + (self._y_coords[i]-self._y_coords[k])**2)**(1/2) ]
+				
 				lengths.sort() 	# Sort the list of lengths into ascending order to compute triangle inequality.
+				
 				x_tri = lengths[0]
 				y_tri = lengths[1]
 				z_tri = lengths[2] 	# This should be the maximum distance between points in the set being considered.
