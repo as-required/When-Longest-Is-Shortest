@@ -187,4 +187,22 @@ class Graph:
         # Function to compute triangle inequality for sets of three nodes.
         # |z| = |x+y| < |x|+|y|, where |z| is the hypotenuse of the triangle.
         
+        corners = [] 		# Array to store the coordinates of the corners of the triangle. 
+	    lengths = [] 		# Array to store the lengths of the sides of the triangle.
+        
+	    for i in range(self._x_coords): 		# Iterate over sets of three points.
+		    for j in range (self._x_coords-1):
+			    for k in range(self._x_coords-2):
+                    
+				corners = [ [ self._x_coords[i] , self._y_coords[i] ] , [ self._x_coords[j] , self._y_coords[j] ] , [ self._x_coords[k] , self._y_coords[k] ] ]
+				lengths = [ ((self._x_coords[j]-self._x_coords[i])**2 + (self._y_coords[j]-self._y_coords[i])**2)**(1/2), 
+                            ((self._x_coords[k]-self._x_coords[j])**2 + (self._y_coords[k]-self._y_coords[j])**2)**(1/2), 
+                            ((self._x_coords[i]-self._x_coords[k])**2 + (self._y_coords[i]-self._y_coords[k])**2)**(1/2) ]
+				lengths.sort() 	# Sort the list of lengths into ascending order to compute triangle inequality.
+				x_tri = lengths[0]
+				y_tri = lengths[1]
+				z_tri = lengths[2] 	# This should be the maximum distance between points in the set being considered.
+                
+				if z_tri <= x_tri + y_tri:
+					print(“Triangle inequality holds”)
         
