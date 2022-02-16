@@ -167,6 +167,7 @@ class Graph:
                 
     def draw_network(self):
         
+	plt.figure(figsize=(5,5))
         nx.draw_networkx(self._graph, self._pos ,arrows = True)
         plt.savefig("nx_graph", dpi = 500, bbox_inches = "tight")
         plt.show()
