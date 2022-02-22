@@ -211,4 +211,3 @@ class Graph:
 					if z_tri <= x_tri + y_tri:
 						print('Triangle inequality holds')
 		
-#test push
