@@ -198,9 +198,10 @@ class Graph:
 					corners = [ [ self._x_coords[i] , self._y_coords[i] ] , 
 							[ self._x_coords[j] , self._y_coords[j] ] , 
 							[ self._x_coords[k] , self._y_coords[k] ] ]
-					lengths = [ ((self._x_coords[j]-self._x_coords[i])**2 + (self._y_coords[j]-self._y_coords[i])**2)**(1/2), 
-											((self._x_coords[k]-self._x_coords[j])**2 + (self._y_coords[k]-self._y_coords[j])**2)**(1/2), 
-											((self._x_coords[i]-self._x_coords[k])**2 + (self._y_coords[i]-self._y_coords[k])**2)**(1/2) ]
+					# lengths[ [dist(i,j)], [dist(k,j)], [dist(i,k)] ]
+					lengths = [ ((self._x_coords[j]-self._x_coords[i])**2 + (self._y_coords[j]-self._y_coords[i])**2)**(1/2), \
+							((self._x_coords[k]-self._x_coords[j])**2 + (self._y_coords[k]-self._y_coords[j])**2)**(1/2), \
+							((self._x_coords[i]-self._x_coords[k])**2 + (self._y_coords[i]-self._y_coords[k])**2)**(1/2) ]
 					
 					lengths.sort() 	# Sort the list of lengths into ascending order to compute triangle inequality.
 					
@@ -210,4 +211,4 @@ class Graph:
 					
 					if z_tri <= x_tri + y_tri:
 						print('Triangle inequality holds')
-		
+		 
