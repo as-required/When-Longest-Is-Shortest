@@ -12,10 +12,15 @@ import networkx as nx
 import Graph as ga
 
 #%% Testing 
+g1 = ga.Graph(nodes = 5, radius = 0.8, p = 1, nx_plot = 1)
+ghalf = ga.Graph(nodes = 5, radius = 0.8, p = 1/2, nx_plot = 1)
+g2 = ga.Graph(nodes = 5, radius= 0.8, nx_plot=1) #Euclidean graph
+print("The longest network path is", g2.longest_path(), \
+      "with length", g2.longest_path_length())
 
-g = ga.Graph(nodes = 5, radius= 0.8, nx_plot=1, plt_plot =1)
-print("The longest network path is", g.longest_path(), \
-      "with length", g.longest_path_length())
-
-print("The shortest network path is", g.shortest_path(), \
-      "with length", g.shortest_path_length())
+print("The shortest network path is", g2.shortest_path(), \
+      "with length", g2.shortest_path_length())
+#%% Triangle inequality
+g1.triangle()
+ghalf.triangle()
+g2.triangle()
