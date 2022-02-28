@@ -168,7 +168,7 @@ class Graph:
     def draw_network(self):
         
         plt.figure(figsize=(5,5))
-        nx.draw_networkx(self._graph, self._pos ,arrows = True)
+        nx.draw_networkx(self._graph, self._pos, arrows = True)
         plt.savefig("nx_graph", dpi = 500, bbox_inches = "tight")
         plt.show()
         
@@ -211,7 +211,72 @@ class Graph:
         
         print("delta=", delta)
         return delta        
+    
+	
+	def geodesic(self):
+        """
+        Adds a geodesic (straight line) between (0,0) and (1,1).
+
+        """
+        start = list(self._pos)[0]
+        end = list(self._pos)[-1]
+        
+        geo_dist = self.L_p(start, end)
+        self._graph.add_edge(start, end, weight = geo_dist)
+        plt.figure(figsize=(5,5))
+        nx.draw_networkx(self._graph, self._pos, arrows = True)
+        plt.show()
         
         
+    def add_edge_weights(self):
+        
+        for i in range(len(self._x)):
+            for j in range(i+1, len(self._x)):
+        
+                point_1 = [self._r[i][0], self._r[i][1]]
+                point_2 = [self._r[j][0], self._r[j][1]]
+
+                if self._r[j][1] > self._r[i][1] and \
+                    (self.L_p(point_1, point_2) < self._radius):
+                        
+                    self._x_coords.append([self._r[i][0], self._r[j][0]]) 
+                    self._y_coords.append([self._r[i][1], self._r[j][1]])
+                    
+                    self._pos[i] = (self._r[i][0], self._r[i][1])
+                    self._pos[j] = (self._r[j][0], self._r[j][1])
+                    
+                    edge_weight = self.L_p(self._pos[i], self._pos[j])
+        
+                    self._graph.add_edge(i,j, weight=edge_weight)
+        
+
+    def longest_weighted_path(self):
+        """
+        Finds the longest metric path (which takes weights into account).
+        
+        """
+        weights = []
+        
+        for i in range(len(self._pos)):
+            for j in range(len(self._pos)-1):
+                ij_weight = self.L_p(self._pos[i], self._pos[j])
+                weights.append(ij_weight)
+                
+        return dg.dag_longest_path(self._graph, weight=weights)
+    
+    
+    def longest_weighted_path_length(self):
+        """
+        Finds the length of the longest metric path (which takes weights into account).
+        
+        """
+        weights = []
+        
+        for i in range(len(self._pos)):
+            for j in range(len(self._pos)-1):
+                ij_weight = self.L_p(self._pos[i], self._pos[j])
+                weights.append(ij_weight)
+                
+        return dg.dag_longest_path_length(self._graph, weight=weights)
         
          
