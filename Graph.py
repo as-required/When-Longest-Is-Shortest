@@ -167,9 +167,13 @@ class Graph:
                 
     def draw_network(self):
         
-        plt.figure(figsize=(5,5))
-        nx.draw_networkx(self._graph, self._pos, arrows = True)
-        plt.savefig("nx_graph", dpi = 500, bbox_inches = "tight")
+        fig, ax = plt.subplots()
+        fig.set_size_inches(5, 5)
+        ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
+        ax.set_title(r"$p = {}$".format(self._p))
+        #plt.axis('on')
+        nx.draw_networkx(self._graph, self._pos, arrows = True, ax = ax)
+        plt.savefig("nx_graph_p={}.png".format(str(self._p)), dpi = 500, bbox_inches = "tight")
         plt.show()
         
     def draw_plt(self):
@@ -212,8 +216,8 @@ class Graph:
         print("delta=", delta)
         return delta        
     
-	
-	def geodesic(self):
+    
+    def geodesic(self):
         """
         Adds a geodesic (straight line) between (0,0) and (1,1).
 
