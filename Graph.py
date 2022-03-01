@@ -116,7 +116,10 @@ class Graph:
         
     
     def add_edges(self):
-        
+        # adding position of node 0 to account for error where it has no value in the pos dict
+        self._pos[0] = (0.0,0.0)
+        # hard code in the last node
+        self._pos[self._nodes - 1] = (1.0, 1.0)
         
         for i in range(len(self._x)): # i denotes the pair that pair j is being compared to
             for j in range(i+1, len(self._x)): # so now we don't need to do the x coord cube space check
@@ -171,7 +174,7 @@ class Graph:
         fig.set_size_inches(5, 5)
         ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
         ax.set_title(r"$p = {}$".format(self._p))
-        #plt.axis('on')
+        #plt.axis('on') for some reason spyder crashes if using this
         nx.draw_networkx(self._graph, self._pos, arrows = True, ax = ax)
         plt.savefig("nx_graph_p={}.png".format(str(self._p)), dpi = 500, bbox_inches = "tight")
         plt.show()

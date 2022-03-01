@@ -189,7 +189,7 @@ class Graph:
         plt.show()   
 
 
-    def triangle(self, n1, n2, n3):
+    def triangle(self, n1 = 0, n2 = 1, n3 = 2):
         """
         Verify the triangle identity
 
