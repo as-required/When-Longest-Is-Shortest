@@ -124,7 +124,9 @@ class Graph:
         for i in range(len(self._x)): # i denotes the pair that pair j is being compared to
             for j in range(i+1, len(self._x)): # so now we don't need to do the x coord cube space check
         # iterates through the y coord of each pair
-        
+                # store coords of nodes i and j in pos (do this before cubespace criteria so that every node has a position)
+                self._pos[i] = (self._r[i][0], self._r[i][1])
+                self._pos[j] = (self._r[j][0], self._r[j][1])
         # define points for L_p calc
                 point_1 = [self._r[i][0], self._r[i][1]]
                 point_2 = [self._r[j][0], self._r[j][1]]
@@ -145,9 +147,7 @@ class Graph:
                     # connect i and j on graph
                     self._graph.add_edge(i,j)
                     
-                    # store coords of i and j
-                    self._pos[i] = (self._r[i][0], self._r[i][1])
-                    self._pos[j] = (self._r[j][0], self._r[j][1])
+                    
             
     # if either j coord is less than the i coord, the cube space rule is violated
                 else:

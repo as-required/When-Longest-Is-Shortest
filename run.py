@@ -13,7 +13,7 @@ import Graph as ga
 
 #%% Testing 
 g1 = ga.Graph(nodes = 5, radius = 0.8, p = 1, nx_plot = 1)
-ghalf = ga.Graph(nodes = 5, radius = 1.5, p = 1/2, nx_plot = 1)
+ghalf = ga.Graph(nodes = 5, radius = 0.8, p = 1/2, nx_plot = 1)
 g2 = ga.Graph(nodes = 5, radius= 0.8, nx_plot = 1) #Euclidean graph
 
 graphs = [[ghalf, 0.5], [g1, 1.0], [g2, 2.0]]
