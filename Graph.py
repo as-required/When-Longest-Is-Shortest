@@ -189,7 +189,7 @@ class Graph:
         plt.show()   
 
 
-    def triangle(self, n1, n2, n3):
+    def triangle(self, n1 = 0, n2 = 1, n3 = 2):
         """
         Verify the triangle identity
 
@@ -213,7 +213,7 @@ class Graph:
                 + ( (self._pos[n2][0] - self._pos[n3][0]) ** 2 + (self._pos[n2][1] - self._pos[n3][1]) ** 2) ** 1/2 \
                 - ( (self._pos[n1][0] - self._pos[n2][0]) ** 2 + (self._pos[n1][1] - self._pos[n2][1]) ** 2) ** 1/2 
         
-        print("delta=", delta)
+        print("delta_{} =".format(self._p), delta)
         return delta        
     
     
