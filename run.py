@@ -12,9 +12,9 @@ import networkx as nx
 import Graph as ga
 
 #%% iniialising graphs
-g1 = ga.Graph(nodes = 5, radius = 0.8, p = 1, nx_plot = 1)
-ghalf = ga.Graph(nodes = 5, radius = 0.8, p = 0.5, nx_plot = 1)
-g2 = ga.Graph(nodes = 5, radius= 0.8, nx_plot = 1) #Euclidean graph
+g1 = ga.Graph(nodes = 5, p = 1, geodesic = 1, nx_plot = 1)
+ghalf = ga.Graph(nodes = 5, p = 0.5, geodesic = 1, nx_plot = 1)
+g2 = ga.Graph(nodes = 5, geodesic = 1,  nx_plot = 1) #Euclidean graph
 
 graphs = [[ghalf, 0.5], [g1, 1.0], [g2, 2.0]]
 
@@ -31,3 +31,4 @@ for i in range(len(graphs)):
 
     print("The shortest network path for p = {}  is".format(graphs[i][1]), graphs[i][0].shortest_path(), \
       "with length", graphs[i][0].shortest_path_length())
+

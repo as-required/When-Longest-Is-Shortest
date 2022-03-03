@@ -15,11 +15,11 @@ import networkx.algorithms.shortest_paths.weighted as s_w
 import time
 start_time = time.time()
 
-np.random.seed(0)
 
 class Graph:
     
-    def __init__(self, nodes = 10, p = 2, radius = 0.9, nx_plot = 0, plt_plot = 0 ):
+    def __init__(self, nodes = 10, p = 2, radius = 0.9, seed = 0, auto_radius = 1,\
+                 geodesic = 0, nx_plot = 0, plt_plot = 0 ):
         """
         We have assumed D = 2 (the dimension)
 
@@ -29,6 +29,9 @@ class Graph:
             DESCRIPTION. The default is 10.
         p : TYPE, optional
             DESCRIPTION. The default is 2.
+        auto_radius = sets radius to 5x the avg interparticle spacing
+        seed: sets the random seed
+        geodesic: adds geodesic with metric weight
         nx_plot : TYPE, optional
             DESCRIPTION. The default is 0.
         plt_plot : TYPE, optional
@@ -39,12 +42,21 @@ class Graph:
         None.
 
         """
+        self._seed = np.random.seed(seed)
+        self._geodesic = geodesic
         
         self._nodes = nodes
         self._p = p
         self._radius = radius
         self._start_time = time.time()
         
+# =============================================================================
+#         automate the radius
+# =============================================================================
+        if auto_radius == 1:
+            rho = self._nodes # node density \rho = N/L^D
+            # put the const as 5 as this seems to be the lowest const that connects for 5 nodes
+            self._radius = 5 * (rho ** (-0.5) ) # avg internode spacing  r = const * \rho^{-1/D}
 # =============================================================================
 #       initialise the nodes
 # =============================================================================
@@ -95,7 +107,7 @@ class Graph:
 #         plot nx graph
 # =============================================================================
         if nx_plot == 1:
-            self.draw_network()
+            self.draw_network(geodesic = self._geodesic)
             
 # =============================================================================
 #         plot plt graph
@@ -175,6 +187,22 @@ class Graph:
         return dg.dag_longest_path(self._graph)
     
     def longest_path_length(self):
+        """
+        Counts EDGES
+        
+        but note the method = "djikstra" by default, I found an R package that has Minkowski
+        and I'm trying to import it to python
+        THIS IS FINE, THE NETWORK PATH IS UNAFFECTED AND THE METRIC PATH JUST RELIES ON THE WEIGHTS
+
+        NOTE: this comes from the networkx.algorithms.dag library, which
+        1) doesn't have anything for shortest paths
+        2) uses a topological sort, which I don't think we want
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
         return dg.dag_longest_path_length(self._graph)
     
     def shortest_path(self):
@@ -207,9 +235,29 @@ class Graph:
         return s_u.bidirectional_shortest_path(self._graph,start, end)
     
     def shortest_path_length(self):
-        return len(self.shortest_path())
+        """
+        Counts EDGES
+        
+        but note the method = "djikstra" by default, I found an R package that has Minkowski
+        and I'm trying to import it to python
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        return nx.shortest_path_length(self._graph, source = list(self._graph.nodes)[0],\
+                                target = list(self._graph.nodes)[-1])
                 
-    def draw_network(self):
+    def draw_network(self, geodesic = 0):
+        
+        if geodesic == 1: #adds geodesic with L_p weight
+            start = self._pos[0]
+            end = self._pos[self._nodes -1]
+            
+            geo_dist = self.L_p(start, end)
+            self._graph.add_edge(0, self._nodes - 1, weight = geo_dist)
         
         fig, ax = plt.subplots()
         fig.set_size_inches(5, 5)
@@ -233,7 +281,7 @@ class Graph:
         plt.show()   
 
 
-    def triangle(self, n1 = 0, n2 = 1, n3 = 2):
+    def triangle(self, n1 = 0, n2 = 4, n3 = 1):
         """
         Verify the triangle inequality
 
@@ -258,19 +306,7 @@ class Graph:
         return delta        
     
     
-    def geodesic(self):
-        """
-        Adds a geodesic (straight line) between (0,0) and (1,1).
-
-        """
-        start = list(self._pos)[0]
-        end = list(self._pos)[-1]
         
-        geo_dist = self.L_p(start, end)
-        self._graph.add_edge(start, end, weight = geo_dist)
-        plt.figure(figsize=(5,5))
-        nx.draw_networkx(self._graph, self._pos, arrows = True)
-        plt.show()
         
         
     def add_edge_weights(self):
