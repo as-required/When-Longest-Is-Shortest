@@ -107,6 +107,23 @@ class Graph:
 
 
     def L_p(self, point_1, point_2):
+        """
+        
+        I have verified that g2.L_p(g2._pos[0], g2._pos[g2._nodes-1]) = sqrt(2) as expected
+
+        Parameters
+        ----------
+        point_1 : TYPE
+            DESCRIPTION.
+        point_2 : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        dist : TYPE
+            DESCRIPTION.
+
+        """
         
         sigma = (np.abs(point_1[0] - point_2[0]) ** self._p) + (np.abs(point_1[1] - point_2[1]) ** self._p)
         dist = sigma ** (1/self._p)
@@ -161,6 +178,30 @@ class Graph:
         return dg.dag_longest_path_length(self._graph)
     
     def shortest_path(self):
+        """
+        display shortest path between start and end nodes as a list
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        return nx.shortest_path(self._graph, source = list(self._graph.nodes)[0],\
+                                target = list(self._graph.nodes)[-1])
+    
+    def shortest_path_bidirectional(self):
+        """
+        This seems to be a more fundamental version of the shortest_path method
+        which I initially first used. I don't see a reason to use this, so I made 
+        a separate "shortest_path" method which seesm to give the same output regardless
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
         start = list(self._graph.nodes)[0]
         end = list(self._graph.nodes)[-1]
         return s_u.bidirectional_shortest_path(self._graph,start, end)
@@ -194,15 +235,26 @@ class Graph:
 
     def triangle(self, n1 = 0, n2 = 1, n3 = 2):
         """
-        Verify the triangle identity
+        Verify the triangle inequality
 
         """
-        # Gromov delta: d(z,x) + d(z,y) - d(x,y) let n2 be z (the middle point), n1 is x and n3 is y
-        delta = ( (self._pos[n2][0] - self._pos[n1][0]) ** 2 + (self._pos[n2][1] - self._pos[n1][1]) ** 2) ** 1/2 \
-                + ( (self._pos[n2][0] - self._pos[n3][0]) ** 2 + (self._pos[n2][1] - self._pos[n3][1]) ** 2) ** 1/2 \
-                - ( (self._pos[n1][0] - self._pos[n2][0]) ** 2 + (self._pos[n1][1] - self._pos[n2][1]) ** 2) ** 1/2 
+        triangle_inequality_satisfied = False
+        # Gromov delta: d(z,x) + d(z,y) - d(x,y) let n1 = x, n2 = y, n3 = z
+        x = self._pos[n1]
+        y = self._pos[n2]
+        z = self._pos[n3]
         
-        print("delta_{} =".format(self._p), delta)
+        # I was being stupid here and calculated Euclidean distance
+        #delta = ( ((self._pos[n3][0] - self._pos[n1][0]) ** 2 + (self._pos[n3][1] - self._pos[n1][1]) ** 2) ** 1/2) \
+        #        + (( (self._pos[n3][0] - self._pos[n2][0]) ** 2 + (self._pos[n3][1] - self._pos[n2][1]) ** 2) ** 1/2) \
+        #        - (( (self._pos[n1][0] - self._pos[n2][0]) ** 2 + (self._pos[n1][1] - self._pos[n2][1]) ** 2) ** 1/2)
+        
+        delta = self.L_p(z,x) + self.L_p(z,y) - self.L_p(x,y)
+        
+        if delta >= 0:
+            triangle_inequality_satisfied = True
+            
+        print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)
         return delta        
     
     
