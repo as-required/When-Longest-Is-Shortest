@@ -14,12 +14,13 @@ import networkx.algorithms.shortest_paths.unweighted as s_u
 import networkx.algorithms.shortest_paths.weighted as s_w
 import time
 start_time = time.time()
-
-
+np.random.seed(1) #noticed that if I put this within the class, each p will get the same nodes
+# also using seed 1 as seed 0 gives node 2 right next to node 0,
+# blocking its path to node 4 for the geodesic (doesn't really matter but doesn't look nice)
 class Graph:
     
-    def __init__(self, nodes = 10, p = 2, radius = 0.9, seed = 0, auto_radius = 1,\
-                 geodesic = 0, nx_plot = 0, plt_plot = 0 ):
+    def __init__(self, nodes = 10, p = 2, radius = 0.9, auto_radius = 1,\
+                 geodesic = 0, nx_plot = 0, plt_plot = 0, show_weights = 0):
         """
         We have assumed D = 2 (the dimension)
 
@@ -42,9 +43,8 @@ class Graph:
         None.
 
         """
-        self._seed = np.random.seed(seed)
         self._geodesic = geodesic
-        
+        self._show_weights = show_weights
         self._nodes = nodes
         self._p = p
         self._radius = radius
@@ -107,7 +107,8 @@ class Graph:
 #         plot nx graph
 # =============================================================================
         if nx_plot == 1:
-            self.draw_network(geodesic = self._geodesic)
+            self.draw_network(geodesic = self._geodesic,\
+                              show_weights = self._show_weights)
             
 # =============================================================================
 #         plot plt graph
@@ -174,7 +175,9 @@ class Graph:
                     self._y_coords.append([self._r[i][1], self._r[j][1]])
                     print()
                     # connect i and j on graph
-                    self._graph.add_edge(i,j)
+                    edge_weight = self.L_p(self._pos[i], self._pos[j]) # adding weights
+                    self._graph.add_edge(i,j,\
+                                         weight = edge_weight)
                     
                     
             
@@ -184,7 +187,7 @@ class Graph:
                 
     def longest_path(self):
         
-        return dg.dag_longest_path(self._graph)
+        return dg.dag_longest_path(self._graph, weight = 1) #to override edge data
     
     def longest_path_length(self):
         """
@@ -203,6 +206,24 @@ class Graph:
             DESCRIPTION.
 
         """
+        return dg.dag_longest_path_length(self._graph, weight = 1) # need to specify weight = 1
+        # as it automatically makes it weighted
+    
+    def longest_weighted_path(self):
+        """
+        Finds the longest metric path (which takes weights into account).
+        
+        """
+        # dag_longest_path uses the edge weights by default
+        return dg.dag_longest_path(self._graph)
+    
+    
+    def longest_weighted_path_length(self):
+        """
+        Finds the length of the longest metric path (which takes weights into account).
+        
+        """
+        # dag_longest_path uses the edge weights by default
         return dg.dag_longest_path_length(self._graph)
     
     def shortest_path(self):
@@ -217,6 +238,30 @@ class Graph:
         """
         return nx.shortest_path(self._graph, source = list(self._graph.nodes)[0],\
                                 target = list(self._graph.nodes)[-1])
+    def shortest_path_length(self):
+        """
+        Counts EDGES
+        
+        but note the method = "djikstra" by default, I found an R package that has Minkowski
+        and I'm trying to import it to python
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        return nx.shortest_path_length(self._graph, source = list(self._graph.nodes)[0],\
+                                target = list(self._graph.nodes)[-1])
+    
+    def shortest_weighted_path(self):
+        
+        return nx.shortest_path(self._graph, source = list(self._graph.nodes)[0],\
+                                target = list(self._graph.nodes)[-1], weight = "weight")
+    def shortest_weighted_path_length(self):
+         
+        return nx.shortest_path_length(self._graph, source = list(self._graph.nodes)[0],\
+                                 target = list(self._graph.nodes)[-1], weight = "weight")
     
     def shortest_path_bidirectional(self):
         """
@@ -233,38 +278,36 @@ class Graph:
         start = list(self._graph.nodes)[0]
         end = list(self._graph.nodes)[-1]
         return s_u.bidirectional_shortest_path(self._graph,start, end)
-    
-    def shortest_path_length(self):
-        """
-        Counts EDGES
-        
-        but note the method = "djikstra" by default, I found an R package that has Minkowski
-        and I'm trying to import it to python
-
-        Returns
-        -------
-        TYPE
-            DESCRIPTION.
-
-        """
-        return nx.shortest_path_length(self._graph, source = list(self._graph.nodes)[0],\
-                                target = list(self._graph.nodes)[-1])
                 
-    def draw_network(self, geodesic = 0):
+    def draw_network(self, geodesic = 0, show_weights = 0):
         
         if geodesic == 1: #adds geodesic with L_p weight
             start = self._pos[0]
             end = self._pos[self._nodes -1]
             
             geo_dist = self.L_p(start, end)
+            self._geo_dist = geo_dist
             self._graph.add_edge(0, self._nodes - 1, weight = geo_dist)
+        edge_weights = nx.get_edge_attributes(self._graph,'weight')
+        self._edge_weights = edge_weights
         
         fig, ax = plt.subplots()
         fig.set_size_inches(5, 5)
         ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
         ax.set_title(r"$p = {}$".format(self._p))
         #plt.axis('on') for some reason spyder crashes if using this
-        nx.draw_networkx(self._graph, self._pos, arrows = True, ax = ax)
+        
+        if show_weights == 1:
+            # round the edge weights to 2dp to display on fig
+            edge_weights_2dp = edge_weights.copy()
+            for i in edge_weights_2dp:
+                edge_weights_2dp[i] = round(edge_weights_2dp[i], 2)
+        
+            # this only draws on the edge labels
+            nx.draw_networkx_edge_labels(self._graph, self._pos,\
+                                     edge_labels = edge_weights_2dp, ax = ax,\
+                                         verticalalignment= "baseline")
+        nx.draw_networkx(self._graph, self._pos, arrows = 1, ax = ax)
         plt.savefig("nx_graph_p={}.png".format(str(self._p)), dpi = 500, bbox_inches = "tight")
         plt.show()
         
@@ -281,82 +324,30 @@ class Graph:
         plt.show()   
 
 
-    def triangle(self, n1 = 0, n2 = 4, n3 = 1):
+    def triangle(self, end_node, start_node = 0, intermediate_node = 1):
         """
         Verify the triangle inequality
+        
+        for p<1: order is imperative!
+        Intermediate must be reachable from start by the cube space rule!
+        need to do delta = d(start,intermediate) + d(intermediate, end) - d(start,end)
+        [this doesn't affect p>1]
 
         """
         triangle_inequality_satisfied = False
-        # Gromov delta: d(z,x) + d(z,y) - d(x,y) let n1 = x, n2 = y, n3 = z
-        x = self._pos[n1]
-        y = self._pos[n2]
-        z = self._pos[n3]
         
-        # I was being stupid here and calculated Euclidean distance
-        #delta = ( ((self._pos[n3][0] - self._pos[n1][0]) ** 2 + (self._pos[n3][1] - self._pos[n1][1]) ** 2) ** 1/2) \
-        #        + (( (self._pos[n3][0] - self._pos[n2][0]) ** 2 + (self._pos[n3][1] - self._pos[n2][1]) ** 2) ** 1/2) \
-        #        - (( (self._pos[n1][0] - self._pos[n2][0]) ** 2 + (self._pos[n1][1] - self._pos[n2][1]) ** 2) ** 1/2)
         
-        delta = self.L_p(z,x) + self.L_p(z,y) - self.L_p(x,y)
+        # modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
+        start_coords = self._pos[start_node]
+        intermediate_coords = self._pos[intermediate_node]
+        end_coords = self._pos[end_node]
+        
+        delta = self.L_p(start_coords,intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
+            - self.L_p(start_coords,end_coords)
         
         if delta >= 0:
             triangle_inequality_satisfied = True
             
         print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)
         return delta        
-    
-    
-        
-        
-        
-    def add_edge_weights(self):
-        
-        for i in range(len(self._x)):
-            for j in range(i+1, len(self._x)):
-        
-                point_1 = [self._r[i][0], self._r[i][1]]
-                point_2 = [self._r[j][0], self._r[j][1]]
-
-                if self._r[j][1] > self._r[i][1] and \
-                    (self.L_p(point_1, point_2) < self._radius):
-                        
-                    self._x_coords.append([self._r[i][0], self._r[j][0]]) 
-                    self._y_coords.append([self._r[i][1], self._r[j][1]])
-                    
-                    self._pos[i] = (self._r[i][0], self._r[i][1])
-                    self._pos[j] = (self._r[j][0], self._r[j][1])
-                    
-                    edge_weight = self.L_p(self._pos[i], self._pos[j])
-        
-                    self._graph.add_edge(i,j, weight=edge_weight)
-        
-
-    def longest_weighted_path(self):
-        """
-        Finds the longest metric path (which takes weights into account).
-        
-        """
-        weights = []
-        
-        for i in range(len(self._pos)):
-            for j in range(len(self._pos)-1):
-                ij_weight = self.L_p(self._pos[i], self._pos[j])
-                weights.append(ij_weight)
-                
-        return dg.dag_longest_path(self._graph, weight=weights)
-    
-    
-    def longest_weighted_path_length(self):
-        """
-        Finds the length of the longest metric path (which takes weights into account).
-        
-        """
-        weights = []
-        
-        for i in range(len(self._pos)):
-            for j in range(len(self._pos)-1):
-                ij_weight = self.L_p(self._pos[i], self._pos[j])
-                weights.append(ij_weight)
-                
-        return dg.dag_longest_path_length(self._graph, weight=weights)
         

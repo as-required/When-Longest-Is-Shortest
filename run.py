@@ -12,16 +12,16 @@ import networkx as nx
 import Graph as ga
 
 #%% iniialising graphs
-g1 = ga.Graph(nodes = 5, p = 1, geodesic = 1, nx_plot = 1)
-ghalf = ga.Graph(nodes = 5, p = 0.5, geodesic = 1, nx_plot = 1)
-g2 = ga.Graph(nodes = 5, geodesic = 1,  nx_plot = 1) #Euclidean graph
+g1 = ga.Graph(nodes = 5, p = 1, geodesic = 1, nx_plot = 1, show_weights= 1)
+ghalf = ga.Graph(nodes = 5, p = 0.5, geodesic = 1,nx_plot = 1, show_weights= 1)
+g2 = ga.Graph(nodes = 5, p =2, geodesic = 1,  nx_plot = 1, show_weights= 1)
 
 graphs = [[ghalf, 0.5], [g1, 1.0], [g2, 2.0]]
 
 #%% Triangle inequality
-g1.triangle()
-ghalf.triangle()
-g2.triangle()
+g1.triangle(start_node = 0, end_node = 4, intermediate_node = 1)
+ghalf.triangle(start_node= 0, end_node = 4, intermediate_node = 1)
+g2.triangle(start_node= 0, end_node = 4, intermediate_node = 1)
 
 #%% longest\shortest paths
 for i in range(len(graphs)):
@@ -31,4 +31,13 @@ for i in range(len(graphs)):
 
     print("The shortest network path for p = {}  is".format(graphs[i][1]), graphs[i][0].shortest_path(), \
       "with length", graphs[i][0].shortest_path_length())
+    print("The longest metric path for p = {} is".format(graphs[i][1]), graphs[i][0].longest_weighted_path(), \
+      "with length", graphs[i][0].longest_weighted_path_length())
+    print("The shortest metric path for p = {}  is".format(graphs[i][1]), graphs[i][0].shortest_weighted_path(), \
+      "with length", graphs[i][0].shortest_weighted_path_length())
 
+# =============================================================================
+# - the longest metric path for p = 1/2 is the geodesic from (0,0) to (1,1) 
+#   w/ length 4
+# - the geodesic is both the shortest and longest metric path for p = 1
+# =============================================================================
