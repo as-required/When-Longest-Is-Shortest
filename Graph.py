@@ -196,21 +196,7 @@ class Graph:
         """
         Verify the triangle identity
 
-        Parameters
-        ----------
-        n1 : TYPE
-            Node 1
-        n2 : TYPE
-            DESCRIPTION.
-        n3 : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
         """
-        
         # Gromov delta: d(z,x) + d(z,y) - d(x,y) let n2 be z (the middle point), n1 is x and n3 is y
         delta = ( (self._pos[n2][0] - self._pos[n1][0]) ** 2 + (self._pos[n2][1] - self._pos[n1][1]) ** 2) ** 1/2 \
                 + ( (self._pos[n2][0] - self._pos[n3][0]) ** 2 + (self._pos[n2][1] - self._pos[n3][1]) ** 2) ** 1/2 \
@@ -286,4 +272,3 @@ class Graph:
                 
         return dg.dag_longest_path_length(self._graph, weight=weights)
         
-         
