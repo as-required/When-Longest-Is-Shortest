@@ -54,6 +54,18 @@ y = x
 
 plt.plot(x, y, linestyle='--', color='black', alpha=0.6) # Add geodesic
 
+# Add maximum deviation from longest network path
+x1 = np.linspace(0.13,0.3)
+y1 = -x1+0.6
+plt.plot(x1, y1, linestyle=':', color='C30')
+plt.annotate('$\Delta_{\, L}$', (0.22,0.4), color='C30')
+
+# Add maximum deviation from shortest network path
+x2 = np.linspace(0.45,0.68)
+y2 = -x2+0.9
+plt.plot(x2, y2, linestyle=':', color='C3')
+plt.annotate('$\Delta_{\, S}$', (0.58,0.35), color='C3')
+
 plt.savefig('GeoVsNetworkPaths.png', dpi=500)
 plt.show()
 
@@ -75,4 +87,3 @@ nx.draw_networkx(G2, pos2, arrows=1, edge_color=edge_colours2, width=1, linewidt
     
 plt.savefig('ManhattanSpace.png', dpi=500)
 plt.show()
-
