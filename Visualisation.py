@@ -29,11 +29,12 @@ nx.draw_networkx(G, pos, arrows=1, edge_color='black', width=1, linewidths=1, no
                  arrowsize=18)
 nx.draw_networkx_edge_labels(G, pos, edge_labels=labels) # Add edge labels
 
-plt.savefig('TriangleInequality.png', dpi=500)
+plt.savefig('TriangleInequality.png', dpi=500, bbox_inches='tight')
 plt.show()
 
+
 #%% Geodesic, Longest Network Path and Shortest Network Path Visualisation
-# Blue represents longest network path; red represents shortest network path; grey represents geodesic.
+# Blue represents longest network path, red represents shortest network path, and grey represents geodesic.
 
 edges1 = [[0,1], [1,2], [2,4], [4,3], [0,5], [5,3]]
 pos1 = {0: (0.0,0.0), 1: (0.1,0.5), 2: (0.4,0.6), 3: (1.0,1.0), 4: (0.6,0.9), 5: (0.7,0.2)}
@@ -66,8 +67,9 @@ y2 = -x2+0.9
 plt.plot(x2, y2, linestyle=':', color='C3')
 plt.annotate('$\Delta_{\, S}$', (0.58,0.35), color='C3')
 
-plt.savefig('GeoVsNetworkPaths.png', dpi=500)
+plt.savefig('GeoVsNetworkPaths.png', dpi=500, bbox_inches='tight')
 plt.show()
+
 
 #%% Manhattan Space Visualisation
 
@@ -85,5 +87,5 @@ plt.axis('off')
 nx.draw_networkx(G2, pos2, arrows=1, edge_color=edge_colours2, width=1, linewidths=1, node_size=500, \
                  node_color='black', font_color='white', arrowsize=20)
     
-plt.savefig('ManhattanSpace.png', dpi=500)
+plt.savefig('ManhattanSpace.png', dpi=500, bbox_inches='tight')
 plt.show()
