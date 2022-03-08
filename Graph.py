@@ -335,6 +335,30 @@ class Graph:
 
         """
         triangle_inequality_satisfied = False
+
+        # Hard code in the positions of the initial and final nodes         
+        self._pos[0] = (0.0,0.0)
+        self._pos[self._nodes - 1] = (1.0, 1.0)
+        
+        # Apply cube space rule so that the correct nodes do not need to be manually added
+        for i in range(len(self._x)):
+            for j in range(i+1, len(self._x)):
+                
+                # Store node positions
+                self._pos[i] = (self._r[i][0], self._r[i][1])
+                self._pos[j] = (self._r[j][0], self._r[j][1])
+                
+                # Define points for L_p calculation
+                point_1 = [self._r[i][0], self._r[i][1]]
+                point_2 = [self._r[j][0], self._r[j][1]]
+  
+                if self._r[j][1] > self._r[i][1] and \
+                    (self.L_p(point_1, point_2) < self._radius):
+                        
+                    # Gather the coordinates, with i first to preserve causality
+                    self._x_coords.append([self._r[i][0], self._r[j][0]]) 
+                    self._y_coords.append([self._r[i][1], self._r[j][1]])
+       
         
         
         # modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
