@@ -419,18 +419,17 @@ class Graph:
                                 end_coords = self._pos[i]
                         
 
+                    # Modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
+                    delta = self.L_p(start_coords, intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
+                        - self.L_p(start_coords, end_coords)
         
-        # modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
+                    if delta >= 0:
+                        triangle_inequality_satisfied = True
+            
+                    print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)
+                    return delta    
+        
+        
         # start_coords = self._pos[start_node]
         # intermediate_coords = self._pos[intermediate_node]
         # end_coords = self._pos[end_node]
-        
-        delta = self.L_p(start_coords,intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
-            - self.L_p(start_coords,end_coords)
-        
-        if delta >= 0:
-            triangle_inequality_satisfied = True
-            
-        print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)
-        return delta        
-        

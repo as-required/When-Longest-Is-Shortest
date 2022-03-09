@@ -41,3 +41,8 @@ for i in range(len(graphs)):
 #   w/ length 4
 # - the geodesic is both the shortest and longest metric path for p = 1
 # =============================================================================
+
+#%%
+g1.triangle()
+ghalf.triangle()
+g2.triangle()
