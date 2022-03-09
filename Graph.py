@@ -362,7 +362,8 @@ class Graph:
                     # Order i < j < k
                     if self._r[k][1] > self._r[j][1] > self._r[i][1] and \
                         (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius):
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
                                 
                                 start_coords = self._pos[i]
                                 intermediate_coords = self._pos[j]
@@ -371,8 +372,9 @@ class Graph:
                     
                     # Order i < k < j
                     elif self._r[j][1] > self._r[k][1] > self._r[i][1] and \
-                        (self.L_p(point_1, point_3) < self._radius) and \
-                            (self.L_p(point_3, point_2) < self._radius):
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
                                 
                                 start_coords = self._pos[i]
                                 intermediate_coords = self._pos[k]
@@ -381,8 +383,9 @@ class Graph:
                     
                     # Order j < k < i
                     elif self._r[i][1] > self._r[k][1] > self._r[j][1] and \
-                        (self.L_p(point_2, point_3) < self._radius) and \
-                            (self.L_p(point_3, point_1) < self._radius):
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
                                 
                                 start_coords = self._pos[j]
                                 intermediate_coords = self._pos[k]
@@ -391,8 +394,9 @@ class Graph:
 
                     # Order j < i < k
                     elif self._r[k][1] > self._r[i][1] > self._r[j][1] and \
-                        (self.L_p(point_2, point_1) < self._radius) and \
-                            (self.L_p(point_1, point_3) < self._radius):
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
                                 
                                 start_coords = self._pos[j]
                                 intermediate_coords = self._pos[i]
@@ -401,8 +405,9 @@ class Graph:
                     
                     # Order k < i < j
                     elif self._r[j][1] > self._r[i][1] > self._r[k][1] and \
-                        (self.L_p(point_3, point_1) < self._radius) and \
-                            (self.L_p(point_1, point_2) < self._radius):
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
                                 
                                 start_coords = self._pos[k]
                                 intermediate_coords = self._pos[i]
@@ -411,8 +416,9 @@ class Graph:
                        
                     # Order k < j < i
                     elif self._r[i][1] > self._r[j][1] > self._r[k][1] and \
-                        (self.L_p(point_3, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_1) < self._radius):
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
                                 
                                 start_coords = self._pos[k]
                                 intermediate_coords = self._pos[j]
