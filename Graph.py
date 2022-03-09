@@ -324,23 +324,106 @@ class Graph:
         plt.show()   
 
 
-    def triangle(self, end_node, start_node = 0, intermediate_node = 1):
+    def triangle(self):
+        # Removed "end_node", "start_node", and "intermediate node" arguments as cube space rule is now built in.
         """
         Verify the triangle inequality
         
-        for p<1: order is imperative!
+        For p<1: order is imperative!
         Intermediate must be reachable from start by the cube space rule!
         need to do delta = d(start,intermediate) + d(intermediate, end) - d(start,end)
         [this doesn't affect p>1]
 
         """
         triangle_inequality_satisfied = False
+
+        # Hard code in the positions of the initial and final nodes         
+        self._pos[0] = (0.0,0.0)
+        self._pos[self._nodes - 1] = (1.0, 1.0)
         
+        # Apply cube space rule so that the correct nodes do not need to be manually added
+        for i in range(len(self._x)):
+            for j in range(i+1, len(self._x)):
+                for k in range(i+2, len(self._x)):
+                
+                    # Store node positions
+                    self._pos[i] = (self._r[i][0], self._r[i][1])
+                    self._pos[j] = (self._r[j][0], self._r[j][1])
+                    self._pos[k] = (self._r[k][0], self._r[k][1])
+                    
+                    # Define points for L_p calculation
+                    point_1 = [self._r[i][0], self._r[i][1]]
+                    point_2 = [self._r[j][0], self._r[j][1]]
+                    point_3 = [self._r[k][0], self._r[k][1]]
+                    
+                    # x coordinates are already in ascending order, so only test y coordinates
+                    # The following code is very messy - there must be a more concise way to do it?
+                    
+                    # Order i < j < k
+                    if self._r[k][1] > self._r[j][1] > self._r[i][1] and \
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius):
+                                
+                                start_coords = self._pos[i]
+                                intermediate_coords = self._pos[j]
+                                end_coords = self._pos[k]
+                    
+                    
+                    # Order i < k < j
+                    elif self._r[j][1] > self._r[k][1] > self._r[i][1] and \
+                        (self.L_p(point_1, point_3) < self._radius) and \
+                            (self.L_p(point_3, point_2) < self._radius):
+                                
+                                start_coords = self._pos[i]
+                                intermediate_coords = self._pos[k]
+                                end_coords = self._pos[j]
+                    
+                    
+                    # Order j < k < i
+                    elif self._r[i][1] > self._r[k][1] > self._r[j][1] and \
+                        (self.L_p(point_2, point_3) < self._radius) and \
+                            (self.L_p(point_3, point_1) < self._radius):
+                                
+                                start_coords = self._pos[j]
+                                intermediate_coords = self._pos[k]
+                                end_coords = self._pos[i]
+                                
+
+                    # Order j < i < k
+                    elif self._r[k][1] > self._r[i][1] > self._r[j][1] and \
+                        (self.L_p(point_2, point_1) < self._radius) and \
+                            (self.L_p(point_1, point_3) < self._radius):
+                                
+                                start_coords = self._pos[j]
+                                intermediate_coords = self._pos[i]
+                                end_coords = self._pos[k]
+                                
+                    
+                    # Order k < i < j
+                    elif self._r[j][1] > self._r[i][1] > self._r[k][1] and \
+                        (self.L_p(point_3, point_1) < self._radius) and \
+                            (self.L_p(point_1, point_2) < self._radius):
+                                
+                                start_coords = self._pos[k]
+                                intermediate_coords = self._pos[i]
+                                end_coords = self._pos[j]
+                                
+                       
+                    # Order k < j < i
+                    elif self._r[i][1] > self._r[j][1] > self._r[k][1] and \
+                        (self.L_p(point_3, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_1) < self._radius):
+                                
+                                start_coords = self._pos[k]
+                                intermediate_coords = self._pos[j]
+                                end_coords = self._pos[i]
+                        
+
         
         # modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
-        start_coords = self._pos[start_node]
-        intermediate_coords = self._pos[intermediate_node]
-        end_coords = self._pos[end_node]
+        # start_coords = self._pos[start_node]
+        # intermediate_coords = self._pos[intermediate_node]
+        # end_coords = self._pos[end_node]
         
         delta = self.L_p(start_coords,intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
             - self.L_p(start_coords,end_coords)
