@@ -3,7 +3,7 @@
 """
 Created on Fri Feb  4 01:56:36 2022
 
-@author: ali
+@author: ali and autumn
 """
 
 import numpy as np
@@ -18,10 +18,6 @@ g2 = ga.Graph(nodes = 5, p =2, geodesic = 1,  nx_plot = 1, show_weights= 1)
 
 graphs = [[ghalf, 0.5], [g1, 1.0], [g2, 2.0]]
 
-#%% trinagle inequality
-g2.triangle()
-g1.triangle()
-ghalf.triangle()
 #%% longest\shortest paths
 for i in range(len(graphs)):
     
@@ -40,4 +36,25 @@ for i in range(len(graphs)):
 #   w/ length 4
 # - the geodesic is both the shortest and longest metric path for p = 1
 # =============================================================================
+
+#%%
+ghalf.triangle()
+g1.triangle()
+g2.triangle()
+
+# We found that:
+# 1. delta = 0 for p = 1
+# 2. delta > 0 for p = 2
+# 3. delta < 0 for p = 1/2
+# This agrees with what we expected.
+
+#%%
+ghalf.perp_dist()
+g1.perp_dist()
+g2.perp_dist()
+
+#%%
+ghalf.path_geo_diff()
+g1.path_geo_diff()
+g2.path_geo_diff()
 
