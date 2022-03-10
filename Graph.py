@@ -473,7 +473,7 @@ class Graph:
         start_node = self._pos[0]
         end_node = self._pos[self._nodes-1]
         
-        Lp_shortest = self.exlude_geo()[0]
+        Lp_shortest = self.exclude_geo()[0]
         Lp_longest = self.exclude_geo()[1]
         Lp_geo = self.L_p(start_node, end_node)
 
