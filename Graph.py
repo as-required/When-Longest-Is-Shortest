@@ -403,7 +403,7 @@ class Graph:
         return avg_delta, min_delta, max_delta, deltas
     
     
-                            
+	
     def perp_dist(self):
         
         """
@@ -428,12 +428,59 @@ class Graph:
             D_i = (abs(a*v_i + b*w_i + c))/((a**2 + b**2)**(0.5))
             deviations.append(D_i)
         
-        av_dev = sum(deviations)/len(deviations)
+        deviations = np.asarray(deviations)
+        avg_dev = np.mean(deviations)
+        min_dev = np.min(deviations)
+        max_dev = np.max(deviations)
         
         print('The deviation of each node from the geodesic is:', deviations)
-        print('The average deviation from the geodesic is:', av_dev)
+        print('The average deviation from the geodesic is:', avg_dev)
         
-        return av_dev
+        return avg_dev, min_dev, max_dev, deviations
+    
+    
+    
+    def exclude_geo(self):
+        
+        """
+        Makes a copy of the original graph and then removes the geodesic.
+        Returns longest path and shortest path excluding the geodesic.
+        
+        """     
+        
+        start_node = self._pos[0]
+        end_node = self._pos[self._nodes-1]
+        
+        self._graph.copy()
+        self._graph.copy.remove_edge(start_node, end_node)
+        
+        new_shortest_length = nx.shortest_path_length(self._graph.copy(), source = list(self._graph.copy.nodes)[0],\
+                                 target = list(self._graph.copy.nodes)[-1], weight = "weight")
             
+        new_longest_length = dg.dag_longest_path_length(self._graph.copy())
         
+        return new_shortest_length, new_longest_length
+        
+        
+        
+    def path_geo_diff(self):
+        
+        """
+        Finds the difference between the L_p distance of the longest/shortest metric path and the geodesic.
+        
+        """
+        
+        start_node = self._pos[0]
+        end_node = self._pos[self._nodes-1]
+        
+        Lp_shortest = self.exlude_geo()[0]
+        Lp_longest = self.exclude_geo()[1]
+        Lp_geo = self.L_p(start_node, end_node)
+
+        diff_shortest = abs(Lp_shortest - Lp_geo)
+        diff_longest = abs(Lp_longest - Lp_geo)
+        
+        return diff_shortest, diff_longest
+    
+           
         
