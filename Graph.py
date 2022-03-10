@@ -327,8 +327,7 @@ class Graph:
         
             # this only draws on the edge labels
             nx.draw_networkx_edge_labels(self._graph, self._pos,\
-                                     edge_labels = edge_weights_2dp, ax = ax,\
-                                         verticalalignment= "baseline")
+                                     edge_labels = edge_weights_2dp, ax = ax)
         plt.savefig("nx_graph_p={}.png".format(str(self._p)), dpi = 500, bbox_inches = "tight")
         plt.show()
         
@@ -389,6 +388,7 @@ class Graph:
                         
                     # Metric is symmetric so only need to consider when each node is intermediate
                                 
+
                     
         deltas = np.asarray(deltas) #resave deltas as an array to take mean
         avg_delta = np.mean(deltas)
@@ -400,13 +400,6 @@ class Graph:
         print("avg delta_{} =".format(self._p), round(avg_delta,17), "so triangle inequality:", triangle_inequality_satisfied)
         return deltas    
     
-    def perp_dist(self):
-        """
-        
+    
+                            
 
-        Returns
-        -------
-        None.
-
-        """
-        return
