@@ -453,9 +453,10 @@ class Graph:
         end_node = self._pos[self._nodes-1]
         
         copied_graph = self._graph.copy()
+        copied_graph.add_edge(start_node, end_node)
         copied_graph.remove_edge(start_node, end_node)
         
-        new_shortest_length = nx.shortest_path_length(copied_graph, source = list(copied_graph.nodes)[0],\
+        new_shortest_length = nx.shortest_path_length(copied_graph(), source = list(copied_graph.nodes)[0],\
                                  target = list(copied_graph.nodes)[-1], weight = "weight")
             
         new_longest_length = dg.dag_longest_path_length(copied_graph)
@@ -474,8 +475,11 @@ class Graph:
         start_node = self._pos[0]
         end_node = self._pos[self._nodes-1]
         
-        Lp_shortest = self.shortest_weighted_path_length()
-        Lp_longest = self.longest_weighted_path_length()
+        #Lp_shortest = self.shortest_weighted_path_length()
+        #Lp_longest = self.longest_weighted_path_length()
+        
+        Lp_shortest = self.exclude_geo()[0]
+        Lp_longest = self.exclude_geo()[1]
         Lp_geo = self.L_p(start_node, end_node)
 
         diff_shortest = abs(Lp_shortest - Lp_geo)
@@ -486,4 +490,4 @@ class Graph:
         
         return diff_shortest, diff_longest
     
-               
+         
