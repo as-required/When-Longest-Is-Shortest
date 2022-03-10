@@ -392,13 +392,15 @@ class Graph:
                     
         deltas = np.asarray(deltas) #resave deltas as an array to take mean
         avg_delta = np.mean(deltas)
+        min_delta = np.min(deltas)
+        max_delta = np.max(deltas)
         
         if round(avg_delta,17) >= 0: # avoid floating point errors by rounding to 17dp
         # would get e-19 deltas for p=1 triggering false triangle identity
             triangle_inequality_satisfied = True
             
         print("avg delta_{} =".format(self._p), round(avg_delta,17), "so triangle inequality:", triangle_inequality_satisfied)
-        return deltas    
+        return avg_delta, min_delta, max_delta, deltas
     
     
                             
