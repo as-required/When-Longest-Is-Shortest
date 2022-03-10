@@ -162,6 +162,8 @@ class Graph:
         
         else:
             return False
+		
+		
     def add_edges(self):
         """
         
@@ -439,7 +441,6 @@ class Graph:
         return avg_dev, min_dev, max_dev, deviations
     
     
-    
     def exclude_geo(self):
         
         """
@@ -451,13 +452,13 @@ class Graph:
         start_node = self._pos[0]
         end_node = self._pos[self._nodes-1]
         
-        self._graph.copy()
-        self._graph.copy.remove_edge(start_node, end_node)
+        copied_graph = self._graph.copy()
+        copied_graph.remove_edge(start_node, end_node)
         
-        new_shortest_length = nx.shortest_path_length(self._graph.copy(), source = list(self._graph.copy.nodes)[0],\
-                                 target = list(self._graph.copy.nodes)[-1], weight = "weight")
+        new_shortest_length = nx.shortest_path_length(copied_graph, source = list(copied_graph.nodes)[0],\
+                                 target = list(copied_graph.nodes)[-1], weight = "weight")
             
-        new_longest_length = dg.dag_longest_path_length(self._graph.copy())
+        new_longest_length = dg.dag_longest_path_length(copied_graph)
         
         return new_shortest_length, new_longest_length
         
@@ -473,14 +474,16 @@ class Graph:
         start_node = self._pos[0]
         end_node = self._pos[self._nodes-1]
         
-        Lp_shortest = self.exclude_geo()[0]
-        Lp_longest = self.exclude_geo()[1]
+        Lp_shortest = self.shortest_weighted_path_length()
+        Lp_longest = self.longest_weighted_path_length()
         Lp_geo = self.L_p(start_node, end_node)
 
         diff_shortest = abs(Lp_shortest - Lp_geo)
         diff_longest = abs(Lp_longest - Lp_geo)
         
+        print('Difference between geodesic and shortest metric path:', diff_shortest)
+        print('Difference between geodesic and longest metric path:', diff_longest)
+        
         return diff_shortest, diff_longest
     
-           
-        
+               
