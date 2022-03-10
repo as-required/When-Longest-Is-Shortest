@@ -357,40 +357,39 @@ class Graph:
                     point_3 = [self._r[k][0], self._r[k][1]]
                     
                     # x coordinates are already in ascending order, so only test y coordinates
-                    # Since the metric is symmetric [d(i,j) = d(j,i)], we only need to consider 3 iterations of i,j,k rather than 6
-                    # In the L_p calculation: i,j,k = k,j,i ; j,k,i = i,k,j ; k,i,j = j,i,k
-                    
-                    # Order i < j < k
-                    if self._r[k][1] > self._r[j][1] > self._r[i][1] and \
+                    # Metric is symmetric so only need to consider when each node is intermediate
+                                
+                    # i is the intermediate node
+                    if (self._r[j][1] > self._r[i][1]) or (self._r[k][1] > self._r[i][1]) and \
                         (self.L_p(point_1, point_2) < self._radius) and \
                             (self.L_p(point_2, point_3) < self._radius) and \
                                 (self.L_p(point_1, point_3) < self._radius):
+                                    
+                                start_coords = self._pos[k]
+                                intermediate_coords = self._pos[i]
+                                end_coords = self._pos[j]
                                 
+                    
+                    # j is the intermediate node
+                    elif (self._r[i][1] > self._r[j][1]) or (self._r[k][1] > self._r[j][1]) and \
+                        (self.L_p(point_1, point_2) < self._radius) and \
+                            (self.L_p(point_2, point_3) < self._radius) and \
+                                (self.L_p(point_1, point_3) < self._radius):
+                                    
                                 start_coords = self._pos[i]
                                 intermediate_coords = self._pos[j]
                                 end_coords = self._pos[k]
-                    
-         
-                    # Order j < k < i
-                    elif self._r[i][1] > self._r[k][1] > self._r[j][1] and \
+                                
+                                
+                    # k is the intermediate node
+                    elif (self._r[i][1] > self._r[k][1]) or (self._r[j][1] > self._r[k][1]) and \
                         (self.L_p(point_1, point_2) < self._radius) and \
                             (self.L_p(point_2, point_3) < self._radius) and \
                                 (self.L_p(point_1, point_3) < self._radius):
-                                
+                                    
                                 start_coords = self._pos[j]
                                 intermediate_coords = self._pos[k]
                                 end_coords = self._pos[i]
-                                
-
-                    # Order j < i < k
-                    elif self._r[k][1] > self._r[i][1] > self._r[j][1] and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                
-                                start_coords = self._pos[j]
-                                intermediate_coords = self._pos[i]
-                                end_coords = self._pos[k]
                              
                         
 
