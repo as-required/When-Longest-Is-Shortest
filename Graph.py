@@ -402,4 +402,36 @@ class Graph:
     
     
                             
-
+    def perp_dist(self):
+        
+        """
+        Finds the perpendicular distance, D, between a node at (v,w) and the line ax + by + c = 0.
+        General formula: D = |av + bw + c| / (a**2 + b**2)**(1/2)
+        This perpendicular distance is called the deviation.
+        The line we are interested in is the geodesic, which is the straight line connecting (0,0) and (1,1).
+        Hence, a = 1, b = -1 and c = 0.
+        
+        """        
+        a = 1
+        b = -1
+        c = 0
+        
+        # List to store deviation of each node 
+        deviations = []
+        
+        for i in range(len(self._x)):
+            v_i = self._r[i][0]     # x coordinate of node
+            w_i = self._r[i][1]     # y coordinate of node
+            
+            D_i = (abs(a*v_i + b*w_i + c))/((a**2 + b**2)**(0.5))
+            deviations.append(D_i)
+        
+        av_dev = sum(deviations)/len(deviations)
+        
+        print('The deviation of each node from the geodesic is:', deviations)
+        print('The average deviation from the geodesic is:', av_dev)
+        
+        return av_dev
+            
+        
+        
