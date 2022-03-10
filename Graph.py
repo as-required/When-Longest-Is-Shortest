@@ -364,10 +364,21 @@ class Graph:
                         (self.L_p(point_1, point_2) < self._radius) and \
                             (self.L_p(point_2, point_3) < self._radius) and \
                                 (self.L_p(point_1, point_3) < self._radius):
-                                    
-                                start_coords = self._pos[k]
-                                intermediate_coords = self._pos[i]
-                                end_coords = self._pos[j]
+                                
+                                    triangle_inequality_satisfied = False
+                                
+                                    start_coords = self._pos[k]
+                                    intermediate_coords = self._pos[i]
+                                    end_coords = self._pos[j]
+                                
+                                    # Modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
+                                    delta = self.L_p(start_coords, intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
+                                        - self.L_p(start_coords, end_coords)
+        
+                                    if delta >= 0:
+                                        triangle_inequality_satisfied = True
+            
+                                    print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)  
                                 
                     
                     # j is the intermediate node
@@ -376,9 +387,19 @@ class Graph:
                             (self.L_p(point_2, point_3) < self._radius) and \
                                 (self.L_p(point_1, point_3) < self._radius):
                                     
-                                start_coords = self._pos[i]
-                                intermediate_coords = self._pos[j]
-                                end_coords = self._pos[k]
+                                    triangle_inequality_satisfied = False
+                                
+                                    start_coords = self._pos[i]
+                                    intermediate_coords = self._pos[j]
+                                    end_coords = self._pos[k]
+                                
+                                    delta = self.L_p(start_coords, intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
+                                        - self.L_p(start_coords, end_coords)
+        
+                                    if delta >= 0:
+                                        triangle_inequality_satisfied = True
+            
+                                    print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)  
                                 
                                 
                     # k is the intermediate node
@@ -386,24 +407,18 @@ class Graph:
                         (self.L_p(point_1, point_2) < self._radius) and \
                             (self.L_p(point_2, point_3) < self._radius) and \
                                 (self.L_p(point_1, point_3) < self._radius):
+                                
+                                    triangle_inequality_satisfied = False
                                     
-                                start_coords = self._pos[j]
-                                intermediate_coords = self._pos[k]
-                                end_coords = self._pos[i]
-                             
+                                    start_coords = self._pos[j]
+                                    intermediate_coords = self._pos[k]
+                                    end_coords = self._pos[i]
                         
-
-                    # Modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
-                    delta = self.L_p(start_coords, intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
-                        - self.L_p(start_coords, end_coords)
+                                    delta = self.L_p(start_coords, intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
+                                        - self.L_p(start_coords, end_coords)
         
-                    if delta >= 0:
-                        triangle_inequality_satisfied = True
+                                    if delta >= 0:
+                                        triangle_inequality_satisfied = True
             
-                    print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)
-                    return delta    
-        
-        
-        # start_coords = self._pos[start_node]
-        # intermediate_coords = self._pos[intermediate_node]
-        # end_coords = self._pos[end_node]
+                                    print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)  
+                            
