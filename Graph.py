@@ -357,7 +357,8 @@ class Graph:
                     point_3 = [self._r[k][0], self._r[k][1]]
                     
                     # x coordinates are already in ascending order, so only test y coordinates
-                    # The following code is very messy - there must be a more concise way to do it?
+                    # Since the metric is symmetric [d(i,j) = d(j,i)], we only need to consider 3 iterations of i,j,k rather than 6
+                    # In the L_p calculation: i,j,k = k,j,i ; j,k,i = i,k,j ; k,i,j = j,i,k
                     
                     # Order i < j < k
                     if self._r[k][1] > self._r[j][1] > self._r[i][1] and \
@@ -369,18 +370,7 @@ class Graph:
                                 intermediate_coords = self._pos[j]
                                 end_coords = self._pos[k]
                     
-                    
-                    # Order i < k < j
-                    elif self._r[j][1] > self._r[k][1] > self._r[i][1] and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                
-                                start_coords = self._pos[i]
-                                intermediate_coords = self._pos[k]
-                                end_coords = self._pos[j]
-                    
-                    
+         
                     # Order j < k < i
                     elif self._r[i][1] > self._r[k][1] > self._r[j][1] and \
                         (self.L_p(point_1, point_2) < self._radius) and \
@@ -401,28 +391,7 @@ class Graph:
                                 start_coords = self._pos[j]
                                 intermediate_coords = self._pos[i]
                                 end_coords = self._pos[k]
-                                
-                    
-                    # Order k < i < j
-                    elif self._r[j][1] > self._r[i][1] > self._r[k][1] and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                
-                                start_coords = self._pos[k]
-                                intermediate_coords = self._pos[i]
-                                end_coords = self._pos[j]
-                                
-                       
-                    # Order k < j < i
-                    elif self._r[i][1] > self._r[j][1] > self._r[k][1] and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                
-                                start_coords = self._pos[k]
-                                intermediate_coords = self._pos[j]
-                                end_coords = self._pos[i]
+                             
                         
 
                     # Modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
