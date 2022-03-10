@@ -18,11 +18,10 @@ g2 = ga.Graph(nodes = 5, p =2, geodesic = 1,  nx_plot = 1, show_weights= 1)
 
 graphs = [[ghalf, 0.5], [g1, 1.0], [g2, 2.0]]
 
-#%% Triangle inequality
-g1.triangle(start_node = 0, end_node = 4, intermediate_node = 1)
-ghalf.triangle(start_node= 0, end_node = 4, intermediate_node = 1)
-g2.triangle(start_node= 0, end_node = 4, intermediate_node = 1)
-
+#%% trinagle inequality
+g2.triangle()
+g1.triangle()
+ghalf.triangle()
 #%% longest\shortest paths
 for i in range(len(graphs)):
     
@@ -42,7 +41,3 @@ for i in range(len(graphs)):
 # - the geodesic is both the shortest and longest metric path for p = 1
 # =============================================================================
 
-#%%
-g1.triangle()
-ghalf.triangle()
-g2.triangle()

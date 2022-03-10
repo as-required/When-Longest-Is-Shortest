@@ -94,6 +94,10 @@ class Graph:
         
         # initialise dictionary to store positions of the nodes
         self._pos = {}
+        # adding position of node 0 to account for error where it has no value in the pos dict
+        self._pos[0] = (0.0,0.0)
+        # hard code in the last node
+        self._pos[self._nodes - 1] = (1.0, 1.0)
         
         # populate graph with nodes to connect later
         self._graph.add_nodes_from(range(len(self._x)))
@@ -142,23 +146,39 @@ class Graph:
         dist = sigma ** (1/self._p)
         
         return dist
-        
-        
     
-    def add_edges(self):
-        # adding position of node 0 to account for error where it has no value in the pos dict
-        self._pos[0] = (0.0,0.0)
-        # hard code in the last node
-        self._pos[self._nodes - 1] = (1.0, 1.0)
+    def cube_space(self, point_1, point_2):
+        """
+        Checks if point_1 can be connected to point_2 in cube space
+
+        Returns
+        -------
+        bool
+
+        """
+        # need to check both x and y coord here to not have requirements on which one is point_1 and which is point_2
+        if (point_2[0] > point_1[0]) and (point_2[1] > point_1[1]):
+            return True
         
+        else:
+            return False
+    def add_edges(self):
+        """
+        
+        note we could tidy this up using the cube space method, but why fix what's not broken?
+        Returns
+        -------
+        None.
+
+        """
         for i in range(len(self._x)): # i denotes the pair that pair j is being compared to
+            self._pos[i] = (self._r[i][0], self._r[i][1])
+            point_1 = [self._r[i][0], self._r[i][1]]
             for j in range(i+1, len(self._x)): # so now we don't need to do the x coord cube space check
         # iterates through the y coord of each pair
                 # store coords of nodes i and j in pos (do this before cubespace criteria so that every node has a position)
-                self._pos[i] = (self._r[i][0], self._r[i][1])
                 self._pos[j] = (self._r[j][0], self._r[j][1])
         # define points for L_p calc
-                point_1 = [self._r[i][0], self._r[i][1]]
                 point_2 = [self._r[j][0], self._r[j][1]]
         # If it is greater than the current x AND y coord, join the points via a straight line
             #if r[j][0] > r[i][0] and r[j][1] > r[i][1]:
@@ -297,6 +317,8 @@ class Graph:
         ax.set_title(r"$p = {}$".format(self._p))
         #plt.axis('on') for some reason spyder crashes if using this
         
+        nx.draw_networkx(self._graph, self._pos, arrows = 1, ax = ax)
+        
         if show_weights == 1:
             # round the edge weights to 2dp to display on fig
             edge_weights_2dp = edge_weights.copy()
@@ -307,7 +329,6 @@ class Graph:
             nx.draw_networkx_edge_labels(self._graph, self._pos,\
                                      edge_labels = edge_weights_2dp, ax = ax,\
                                          verticalalignment= "baseline")
-        nx.draw_networkx(self._graph, self._pos, arrows = 1, ax = ax)
         plt.savefig("nx_graph_p={}.png".format(str(self._p)), dpi = 500, bbox_inches = "tight")
         plt.show()
         
@@ -333,77 +354,59 @@ class Graph:
         Intermediate must be reachable from start by the cube space rule!
         need to do delta = d(start,intermediate) + d(intermediate, end) - d(start,end)
         [this doesn't affect p>1]
-
+         
+         checks: need delta_1 = 0 and delta_(p<1) < 0:
+             works, tested for p=1,0.5,0.1
         """
         triangle_inequality_satisfied = False
 
-        # Hard code in the positions of the initial and final nodes         
-        self._pos[0] = (0.0,0.0)
-        self._pos[self._nodes - 1] = (1.0, 1.0)
         
-        # Apply cube space rule so that the correct nodes do not need to be manually added
+        deltas = [] # list to store the deltas from the allowed triangles
+        
+        
+# =============================================================================
+#         Apply cube space rule so that the correct nodes do not need to be manually added
+#         don't need to test x coord as nodes already ordered in ascending x coord numbers in pos dict
+#         so i will always be start and k end
+# =============================================================================
         for i in range(len(self._x)):
+            point_i = [self._pos[i][0], self._pos[i][1]]
             for j in range(i+1, len(self._x)):
-                for k in range(i+2, len(self._x)):
-                
-                    # Store node positions
-                    self._pos[i] = (self._r[i][0], self._r[i][1])
-                    self._pos[j] = (self._r[j][0], self._r[j][1])
-                    self._pos[k] = (self._r[k][0], self._r[k][1])
+                point_j = [self._pos[j][0], self._pos[j][1]]
+                # check if i can be connected to j before checking any k
+                if self.cube_space(point_i, point_j) == False:
+                    continue 
+                for k in range(j+1, len(self._x)):
+                # check i-k, j-k 
                     
-                    # Define points for L_p calculation
-                    point_1 = [self._r[i][0], self._r[i][1]]
-                    point_2 = [self._r[j][0], self._r[j][1]]
-                    point_3 = [self._r[k][0], self._r[k][1]]
+                    point_k = [self._pos[k][0], self._pos[k][1]]
                     
-                    # x coordinates are already in ascending order, so only test y coordinates
+                    # check if i-k can be connected and j-k can be connected
+                    if self.cube_space(point_i, point_k) == True and self.cube_space(point_j, point_k) == True:
+                        delta = self.L_p(point_i, point_j) + self.L_p(point_j, point_k)\
+                            - self.L_p(point_i, point_k)
+                        deltas.append(delta)
+                        
                     # Metric is symmetric so only need to consider when each node is intermediate
                                 
-                    # i is the intermediate node
-                    if (self._r[j][1] > self._r[i][1]) or (self._r[k][1] > self._r[i][1]) and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                    
-                                start_coords = self._pos[k]
-                                intermediate_coords = self._pos[i]
-                                end_coords = self._pos[j]
-                                
                     
-                    # j is the intermediate node
-                    elif (self._r[i][1] > self._r[j][1]) or (self._r[k][1] > self._r[j][1]) and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                    
-                                start_coords = self._pos[i]
-                                intermediate_coords = self._pos[j]
-                                end_coords = self._pos[k]
-                                
-                                
-                    # k is the intermediate node
-                    elif (self._r[i][1] > self._r[k][1]) or (self._r[j][1] > self._r[k][1]) and \
-                        (self.L_p(point_1, point_2) < self._radius) and \
-                            (self.L_p(point_2, point_3) < self._radius) and \
-                                (self.L_p(point_1, point_3) < self._radius):
-                                    
-                                start_coords = self._pos[j]
-                                intermediate_coords = self._pos[k]
-                                end_coords = self._pos[i]
-                             
-                        
-
-                    # Modified Gromov delta: d(start,intermediate) + d(intermediate, end) - d(start,end)
-                    delta = self.L_p(start_coords, intermediate_coords) + self.L_p(intermediate_coords, end_coords)\
-                        - self.L_p(start_coords, end_coords)
+        deltas = np.asarray(deltas) #resave deltas as an array to take mean
+        avg_delta = np.mean(deltas)
         
-                    if delta >= 0:
-                        triangle_inequality_satisfied = True
+        if round(avg_delta,17) >= 0: # avoid floating point errors by rounding to 17dp
+        # would get e-19 deltas for p=1 triggering false triangle identity
+            triangle_inequality_satisfied = True
             
-                    print("delta_{} =".format(self._p), delta, "so triangle inequality:", triangle_inequality_satisfied)
-                    return delta    
+        print("avg delta_{} =".format(self._p), round(avg_delta,17), "so triangle inequality:", triangle_inequality_satisfied)
+        return deltas    
+    
+    def perp_dist(self):
+        """
         
-        
-        # start_coords = self._pos[start_node]
-        # intermediate_coords = self._pos[intermediate_node]
-        # end_coords = self._pos[end_node]
+
+        Returns
+        -------
+        None.
+
+        """
+        return
