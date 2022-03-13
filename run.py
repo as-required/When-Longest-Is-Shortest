@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 import Graph as ga
+from scipy.optimize import curve_fit
 
 #%% iniialising graphs
 g1 = ga.Graph(nodes = 5, p = 1, geodesic = 1, nx_plot = 1, show_weights= 1)
@@ -270,7 +271,7 @@ ax.set_ylabel('Average Deviation')
 ax.set_ylim(0.225,0.230)
 
 plt.plot(p_vals, avg_dists, marker='o', linestyle='')
-#plt.savefig('ResultPlot2.png', dpi=500, bbox_inches='tight')
+plt.savefig('ResultPlot2.png', dpi=500, bbox_inches='tight')
 plt.show()
 
 #%% Result Plot 3: Difference in length between geodesic and path vs p
@@ -315,5 +316,5 @@ ax.set_ylabel('$|L_{p, path} - L_{p, geo}|$')
 plt.plot(p_vals, sh_diffs, marker='o', linestyle='', color='C30', label='Shortest Metric Path')
 plt.plot(p_vals, lo_diffs, marker='o', linestyle='', color='C2', label='Longest Metric Path')
 plt.legend()
-#plt.savefig('ResultPlot3.png', dpi=500, bbox_inches='tight')
+plt.savefig('ResultPlot3.png', dpi=500, bbox_inches='tight')
 plt.show()

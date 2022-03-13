@@ -14,7 +14,7 @@ import networkx.algorithms.shortest_paths.unweighted as s_u
 import networkx.algorithms.shortest_paths.weighted as s_w
 import time
 start_time = time.time()
-np.random.seed(1) #noticed that if I put this within the class, each p will get the same nodes
+#np.random.seed(1) #noticed that if I put this within the class, each p will get the same nodes
 # also using seed 1 as seed 0 gives node 2 right next to node 0,
 # blocking its path to node 4 for the geodesic (doesn't really matter but doesn't look nice)
 class Graph:
@@ -229,7 +229,7 @@ class Graph:
 
         """
         return dg.dag_longest_path_length(self._graph, weight = 1) # need to specify weight = 1
-        # as it automatically makes it weighted
+        # as it automatically makes it weighted, so we need to set all the weights to 1
     
     def longest_weighted_path(self):
         """
@@ -246,7 +246,7 @@ class Graph:
         
         """
         # dag_longest_path uses the edge weights by default
-        return dg.dag_longest_path_length(self._graph)
+        return dg.dag_longest_path_length(self._graph) # the method automatically uses the edge weights
     
     def shortest_path(self):
         """
@@ -448,18 +448,19 @@ class Graph:
         Returns longest path and shortest path excluding the geodesic.
         
         """     
-        
-        start_node = self._pos[0]
-        end_node = self._pos[self._nodes-1]
+        # node names
+        start_node = 0
+        end_node = self._nodes - 1
         
         copied_graph = self._graph.copy()
-        copied_graph.add_edge(start_node, end_node)
-        copied_graph.remove_edge(start_node, end_node)
         
-        new_shortest_length = nx.shortest_path_length(copied_graph(), source = list(copied_graph.nodes)[0],\
-                                 target = list(copied_graph.nodes)[-1], weight = "weight")
+        if self._graph.has_edge(start_node, end_node): # check if the geodesic already exists or not
+            copied_graph.remove_edge(0, self._nodes-1) # MUST USE THE NAME OF THE NODE, NOT THE POS
+        
+        new_shortest_length = nx.shortest_path_length(copied_graph, source = start_node,\
+                                 target = end_node, weight = "weight")
             
-        new_longest_length = dg.dag_longest_path_length(copied_graph)
+        new_longest_length = dg.dag_longest_path_length(copied_graph) # ONLY PUT weight =1 for network lengths!
         
         return new_shortest_length, new_longest_length
         
@@ -489,5 +490,7 @@ class Graph:
         print('Difference between geodesic and longest metric path:', diff_longest)
         
         return diff_shortest, diff_longest
+    
+    
     
          
