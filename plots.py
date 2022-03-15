@@ -111,7 +111,7 @@ class Plots:
             roots = np.roots(poly)
             real_roots = [i for i in roots if i.imag == 0]
             x_int = min([i for i in real_roots if i > 0])
-            print('x-intercept:', x_int)
+            print('x-intercept:', np.real(x_int))
             
             # axis values for the curve fit
             x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
@@ -151,7 +151,7 @@ class Plots:
             	roots = np.roots(poly)
             	real_roots = [i for i in roots if i.imag == 0]
             	x_int = min([i for i in real_roots if i > 0])
-            	print('x-intercept:', x_int)
+            	print('x-intercept:', np.real(x_int))
                 
                 # axis values for the curve fit
                 x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
