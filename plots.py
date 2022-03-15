@@ -3,7 +3,7 @@
 """
 Created on Sun Mar 13 01:08:54 2022
 
-@author: ali
+@author: ali and autumn
 """
 import Graph as ga
 import numpy as np
@@ -105,6 +105,13 @@ class Plots:
             
             # curve fitting
             popt, pcov = curve_fit(quartic, p_vals, mean_deltas, sigma = errors)
+			
+			# Find roots of polynomial
+            poly = [popt[0], popt[1], popt[2], popt[3], popt[4]]
+            roots = np.roots(poly)
+            real_roots = [i for i in roots if i.imag == 0]
+            x_int = min([i for i in real_roots if i > 0])
+            print('x-intercept:', x_int)
             
             # axis values for the curve fit
             x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
@@ -122,6 +129,7 @@ class Plots:
             
             print('Mean {} Gromov-Delta for each p:'.format(delta_type), mean_deltas)
             print('Uncertainties on mean {} Gromov-Delta for each p:'.format(delta_type), errors)
+			
         else:
             delta_types_list = ["Avg", "Min", "Max"] # for the y axis labels
             fig, axs = plt.subplots(1,3) # axs = (ax_avg, ax_min, ax_max)
@@ -137,6 +145,13 @@ class Plots:
                 
                 # curve fitting
                 popt, pcov = curve_fit(quartic, p_vals, mean_deltas_list[m], sigma = errors_list[m])
+				
+				# Find roots of polynomial
+           		poly = [popt[0], popt[1], popt[2], popt[3], popt[4]]
+            	roots = np.roots(poly)
+            	real_roots = [i for i in roots if i.imag == 0]
+            	x_int = min([i for i in real_roots if i > 0])
+            	print('x-intercept:', x_int)
                 
                 # axis values for the curve fit
                 x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
