@@ -54,6 +54,15 @@ ghalf.perp_dist()
 g1.perp_dist()
 g2.perp_dist()
 
+# Found that:
+# 1. average and maximum difference = 0 for p = 1 
+# 2. average and maximum difference > 0 for p = 2
+# 3. average and maximum difference < 0 for p = 1/2
+# 4. minimum difference = 0 for all p values (as source and sink lie on geodesic)
+# This agrees with what we expected:
+# The longest path is a better approximation to the geodesic if diff < 0 (we expect this for p < 1)
+# The shortest path is a better approximation to the geodesic if diff > 0 (we expect this for p > 1)
+
 #%%
 ghalf.path_geo_diff()
 g1.path_geo_diff()
