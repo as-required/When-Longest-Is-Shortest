@@ -404,7 +404,6 @@ class Graph:
         print("avg delta_{} =".format(self._p), round(avg_delta,17), "so triangle inequality:", triangle_inequality_satisfied)
         return avg_delta, min_delta, max_delta, deltas
     
-    
 	
     def perp_dist(self):
         
@@ -420,25 +419,58 @@ class Graph:
         b = -1
         c = 0
         
-        # List to store deviation of each node 
-        deviations = []
+        # List to store deviation of each node in the longest and shortest metric paths, respectively
+        long_deviations = []
+        short_deviations = []
         
-        for i in range(len(self._x)):
-            v_i = self._r[i][0]     # x coordinate of node
-            w_i = self._r[i][1]     # y coordinate of node
+        longest_path_nodes = self.longest_weighted_path()
+        shortest_path_nodes = self.shortest_weighted_path()    
+        
+        # Calculate perpendicular distance of each node in the longest metric path from the geodesic
+        for i in range(len(longest_path_nodes)):
+            j =longest_path_nodes[i]
+            v_i = self._r[j][0]     # x coordinate of node
+            w_i = self._r[j][1]     # y coordinate of node
             
             D_i = (abs(a*v_i + b*w_i + c))/((a**2 + b**2)**(0.5))
-            deviations.append(D_i)
+            long_deviations.append(D_i)
         
-        deviations = np.asarray(deviations)
-        avg_dev = np.mean(deviations)
-        min_dev = np.min(deviations)
-        max_dev = np.max(deviations)
+        # Calculate perpendicular distance of each node in the shortest metric path from the geodesic
+        for i in range(len(shortest_path_nodes)):
+            j = shortest_path_nodes[i]
+            v_i = self._r[j][0]     # x coordinate of node
+            w_i = self._r[j][1]     # y coordinate of node
+            
+            D_i = (abs(a*v_i + b*w_i + c))/((a**2 + b**2)**(0.5))
+            short_deviations.append(D_i)
+            
+        # Convert lists into arrays
+        long_deviations = np.asarray(long_deviations)
+        short_deviations = np.asarray(short_deviations)
         
-        print('The deviation of each node from the geodesic is:', deviations)
-        print('The average deviation from the geodesic is:', avg_dev)
+        # Find mean, mininum and maximum for each array
+        long_avg_dev = np.mean(long_deviations)
+        long_min_dev = np.min(long_deviations)
+        long_max_dev = np.max(long_deviations)
+        short_avg_dev = np.mean(short_deviations)
+        short_min_dev = np.min(short_deviations)
+        short_max_dev = np.max(short_deviations)
         
-        return avg_dev, min_dev, max_dev, deviations
+        # Find difference between deviation of longest path and shortest path
+        avg_diff = long_avg_dev - short_avg_dev
+        min_diff = long_min_dev - short_min_dev
+        max_diff = long_max_dev - short_max_dev
+        
+        # The longest path is a better approximation to the geodesic if diff < 0 (we expect this for p < 1)
+        # The shortest path is a better approximation to the geodesic if diff > 0 (we expect this for p > 1)
+        
+        print('The deviation of each node from the geodesic for nodes in the longest metric path are:', long_deviations)
+        print('The deviation of each node from the geodesic for nodes in the shortest metric path are:', short_deviations)
+        print('The average difference in longest and shortest metric path deviations from the geodesic is:', avg_diff)
+        print('The minimum difference in longest and shortest metric path deviations from the geodesic is:', min_diff)
+        print('The maximum difference in longest and shortest metric path deviations from the geodesic is:', max_diff)
+        
+        return avg_diff, min_diff, max_diff
     
     
     def exclude_geo(self):
