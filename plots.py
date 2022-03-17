@@ -187,6 +187,8 @@ class Plots:
 # =============================================================================
 #     need to add unc in x intercept analysis
 # =============================================================================
+
+
     def perp_vs_p(self,p_start = 0.01, p_end = 2, p_step = 0.1, nodes = 50, trials = 10, perp_type = "avg"\
                    ,curve = "quartic", poly_order = 10, radius = None):
 # =============================================================================
@@ -359,16 +361,12 @@ class Plots:
 
     def length_vs_p(self,p_start = 0.01, p_end = 2, p_step = 0.1, nodes = 50, trials = 10, \
                      poly_order = 10, radius = None, path_type = "metric"):
-
         
         p_vals = np.arange(p_start, p_end, p_step) # p_end is exclusive
         sh_diffs = [] # Shortest difference list
         lo_diffs = [] # Longest difference list
         sh_errors = []
         lo_errors = []
-        
-
-        
         
 # =============================================================================
 #         Collecting the data and making the graphs
@@ -414,7 +412,7 @@ class Plots:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_xlabel('$p$', fontsize=14)
-        ax.set_ylabel(r'Difference in $L_p$ length with geodesic', fontsize=14)
+        ax.set_ylabel(r'$L_{p, path} - L_{p, geo}$', fontsize=14)
         ax.set_xticks(np.arange(p_start,p_end,0.3)) 
         ax.set_xlim(p_start - 0.1, p_end + 0.1)
         ax.set_ylim(0.0,0.001)
