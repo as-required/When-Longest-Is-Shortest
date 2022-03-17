@@ -422,6 +422,8 @@ class Graph:
         # List to store deviation of each node in the longest and shortest metric paths, respectively
         long_deviations = []
         short_deviations = []
+        # REMOVE GEODESIC in order to not affect shortest and longest lengths
+        graph_no_geo = self.exclude_geo_graph()
         
         longest_path_nodes = self.longest_weighted_path()
         shortest_path_nodes = self.shortest_weighted_path()    
@@ -464,8 +466,8 @@ class Graph:
         # The longest path is a better approximation to the geodesic if diff < 0 (we expect this for p < 1)
         # The shortest path is a better approximation to the geodesic if diff > 0 (we expect this for p > 1)
         
-        print('The deviation of each node from the geodesic for nodes in the longest metric path are:', long_deviations)
-        print('The deviation of each node from the geodesic for nodes in the shortest metric path are:', short_deviations)
+        #print('The deviation of each node from the geodesic for nodes in the longest metric path are:', long_deviations)
+        #print('The deviation of each node from the geodesic for nodes in the shortest metric path are:', short_deviations)
         print('The average difference in longest and shortest metric path deviations from the geodesic is:', avg_diff)
         print('The minimum difference in longest and shortest metric path deviations from the geodesic is:', min_diff)
         print('The maximum difference in longest and shortest metric path deviations from the geodesic is:', max_diff)
@@ -495,6 +497,24 @@ class Graph:
         new_longest_length = dg.dag_longest_path_length(copied_graph) # ONLY PUT weight =1 for network lengths!
         
         return new_shortest_length, new_longest_length
+    
+    def exclude_geo_graph(self):
+        
+        """
+        Makes a copy of the original graph and then removes the geodesic.
+        Returns the graph without the geodesic
+        
+        """     
+        # node names
+        start_node = 0
+        end_node = self._nodes - 1
+        
+        copied_graph = self._graph.copy()
+        
+        if self._graph.has_edge(start_node, end_node): # check if the geodesic already exists or not
+            copied_graph.remove_edge(0, self._nodes-1) # MUST USE THE NAME OF THE NODE, NOT THE POS
+        
+        return copied_graph #not this is a DiGraph object, not an object of our Graph class
         
         
         
