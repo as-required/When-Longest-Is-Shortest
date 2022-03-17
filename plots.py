@@ -15,6 +15,7 @@ from numpy.polynomial.polynomial import polyval
 # function for curve_fit
 def quartic(x, a0, a1, a2, a3, a4): # this is an inverse quartic
     return a0 + a1/x + a2/x**2 + a3/x**3 + a4/x**4
+
 def arbitrary_poly(x, *params):
     return sum([p*(x**i) for i, p in enumerate(params)])
 
@@ -108,9 +109,12 @@ class Plots:
             ax.spines['top'].set_visible(False)
             ax.set_xlabel('$p$', fontsize=14)
             ax.set_ylabel('{} $\delta$'.format(delta_type.capitalize()), fontsize=14)
-            ax.set_xticks(np.arange(p_start,p_end,0.5)) 
-            ax.set_xlim(p_start - 0.1, p_end + 0.1)
-            ax.set_ylim(-0.5,0.2)
+            #ax.set_ylabel('Mean $\delta$', fontsize=14)
+            #ax.set_xticks(np.arange(p_start,p_end,0.5)) 
+            ax.set_xticks(np.arange(0.0,2.1,0.5))
+            #ax.set_xlim(p_start - 0.1, p_end + 0.1)
+            ax.set_xlim(0,2.01)
+            ax.set_ylim(-0.5,0.1)
             
             # curve fitting
             popt, pcov = curve_fit(arbitrary_poly, p_vals, mean_deltas, sigma = errors,\
@@ -132,6 +136,7 @@ class Plots:
             plt.plot(x_vals, y_vals, linestyle='-', color='C30')
 
             plt.hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
+			plt.vlines(1,-0.5, 0.1, linestyle=':', color='k', alpha=0.5)
             plt.plot(p_vals, mean_deltas, marker='x', linestyle='', color='C30', label='Average $\delta$')
             plt.errorbar(p_vals, mean_deltas, yerr=errors, fmt='o', color='C30', capsize=5)
             
@@ -175,6 +180,7 @@ class Plots:
                 axs[m].plot(x_vals, y_vals, linestyle='-', color='C30')
 
                 axs[m].hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
+				axs[m].vlines(1,-0.5, 0.2, linestyle=':', color='k', alpha=0.5)
                 axs[m].plot(p_vals, mean_deltas_list[m], marker='x', linestyle='', color='C30',\
                          label='{} $\delta$'.format(delta_types_list[m]))
                 axs[m].errorbar(p_vals, mean_deltas_list[m], yerr=errors_list[m], fmt='o', color='C30', capsize=5)
@@ -280,12 +286,12 @@ class Plots:
             ax.spines['top'].set_visible(False)
             ax.set_xlabel('$p$', fontsize=14)
             ax.set_ylabel(r'{} $\Delta_L - \Delta_S$'.format(perp_type.capitalize()), fontsize=14)
-            ax.set_xticks(np.arange(p_start,p_end,0.5)) 
+			#ax.set_xticks(np.arange(p_start,p_end,0.5)) 
+            ax.set_xticks(np.arange(0,2.1,0.5))
             ax.set_xlim(p_start - 0.1, p_end + 0.1)
-            ax.set_ylim(-0.5,0.2)
+            ax.set_ylim(-0.3,0.3)
             
             # curve fitting
-
             popt, pcov = curve_fit(arbitrary_poly, p_vals, mean_perps, sigma = errors,\
                                    p0 = np.ones(poly_order))
             
@@ -304,6 +310,7 @@ class Plots:
             plt.plot(x_vals, y_vals, linestyle='-', color='C30')
 
             plt.hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
+			plt.vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
             plt.plot(p_vals, mean_perps, marker='x', linestyle='', color='C30', label='Average perps')
             plt.errorbar(p_vals, mean_perps, yerr=errors, fmt='o', color='C30', capsize=5)
             
@@ -344,7 +351,7 @@ class Plots:
                 
                 #plot
                 axs[m].plot(x_vals, y_vals, linestyle='-', color='C30')
-
+				axs[m].vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
                 axs[m].hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
                 axs[m].plot(p_vals, mean_perps_list[m], marker='x', linestyle='', color='C30',\
                          label='{} $\delta$'.format(perp_types_list[m]))
