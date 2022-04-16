@@ -537,6 +537,8 @@ class Graph:
 
         diff_shortest = abs(Lp_shortest - Lp_geo)
         diff_longest = abs(Lp_longest - Lp_geo)
+        """diff_shortest = Lp_shortest - Lp_geo
+        diff_longest = Lp_longest - Lp_geo"""
         
         print('Difference between geodesic and shortest metric path:', diff_shortest)
         print('Difference between geodesic and longest metric path:', diff_longest)

@@ -108,12 +108,13 @@ class Plots:
             ax.spines['right'].set_visible(False)
             ax.spines['top'].set_visible(False)
             ax.set_xlabel('$p$', fontsize=14)
-            ax.set_ylabel('{} $\delta$'.format(delta_type.capitalize()), fontsize=14)
+            # note set the ylabel to only be for the avg as that is what we will use
+            ax.set_ylabel(r'$\bar{\delta}$', fontsize=14)
             #ax.set_ylabel('Mean $\delta$', fontsize=14)
             #ax.set_xticks(np.arange(p_start,p_end,0.5)) 
-            ax.set_xticks(np.arange(0.0,2.1,0.5))
+            ax.set_xticks(np.arange(0.0,4,0.5))
             #ax.set_xlim(p_start - 0.1, p_end + 0.1)
-            ax.set_xlim(0,2.01)
+            ax.set_xlim(0,4.01)
             ax.set_ylim(-0.5,0.1)
             
             # curve fitting
@@ -135,10 +136,10 @@ class Plots:
             #plot
             plt.plot(x_vals, y_vals, linestyle='-', color='C30')
 
-            plt.hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
-			plt.vlines(1,-0.5, 0.1, linestyle=':', color='k', alpha=0.5)
+            plt.hlines(0,0,10, linestyle=':', color='k', alpha=0.5)
+            plt.vlines(1,-10, 10, linestyle=':', color='k', alpha=0.5)
             plt.plot(p_vals, mean_deltas, marker='x', linestyle='', color='C30', label='Average $\delta$')
-            plt.errorbar(p_vals, mean_deltas, yerr=errors, fmt='o', color='C30', capsize=5)
+            plt.errorbar(p_vals, mean_deltas, yerr=errors, fmt='.', color='C30', capsize=5, markersize= 1)
             
             plt.savefig('ResultPlot1_{}_delta.png'.format(delta_type), dpi=500, bbox_inches='tight')
             plt.show()
@@ -180,7 +181,7 @@ class Plots:
                 axs[m].plot(x_vals, y_vals, linestyle='-', color='C30')
 
                 axs[m].hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
-				axs[m].vlines(1,-0.5, 0.2, linestyle=':', color='k', alpha=0.5)
+                axs[m].vlines(1,-0.5, 0.2, linestyle=':', color='k', alpha=0.5)
                 axs[m].plot(p_vals, mean_deltas_list[m], marker='x', linestyle='', color='C30',\
                          label='{} $\delta$'.format(delta_types_list[m]))
                 axs[m].errorbar(p_vals, mean_deltas_list[m], yerr=errors_list[m], fmt='o', color='C30', capsize=5)
@@ -285,8 +286,9 @@ class Plots:
             ax.spines['right'].set_visible(False)
             ax.spines['top'].set_visible(False)
             ax.set_xlabel('$p$', fontsize=14)
-            ax.set_ylabel(r'{} $\Delta_L - \Delta_S$'.format(perp_type.capitalize()), fontsize=14)
-			#ax.set_xticks(np.arange(p_start,p_end,0.5)) 
+            # note set the ylabel to only be for the avg as that is what we will use
+            ax.set_ylabel(r'Average $(\Delta_L - \Delta_S)}$', fontsize=14)
+            #ax.set_xticks(np.arange(p_start,p_end,0.5)) 
             ax.set_xticks(np.arange(0,2.1,0.5))
             ax.set_xlim(p_start - 0.1, p_end + 0.1)
             ax.set_ylim(-0.3,0.3)
@@ -310,9 +312,10 @@ class Plots:
             plt.plot(x_vals, y_vals, linestyle='-', color='C30')
 
             plt.hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
-			plt.vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
+            plt.vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
             plt.plot(p_vals, mean_perps, marker='x', linestyle='', color='C30', label='Average perps')
-            plt.errorbar(p_vals, mean_perps, yerr=errors, fmt='o', color='C30', capsize=5)
+            plt.errorbar(p_vals, mean_perps, yerr=errors, fmt='.', markersize = 1,\
+                         color='C30', capsize=5)
             
             plt.savefig('ResultPlot2_{}_perp.png'.format(perp_type), dpi=500, bbox_inches='tight')
             plt.show()
@@ -351,7 +354,7 @@ class Plots:
                 
                 #plot
                 axs[m].plot(x_vals, y_vals, linestyle='-', color='C30')
-				axs[m].vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
+                axs[m].vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
                 axs[m].hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
                 axs[m].plot(p_vals, mean_perps_list[m], marker='x', linestyle='', color='C30',\
                          label='{} $\delta$'.format(perp_types_list[m]))
@@ -419,10 +422,10 @@ class Plots:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_xlabel('$p$', fontsize=14)
-        ax.set_ylabel(r'$L_{p, path} - L_{p, geo}$', fontsize=14)
-        ax.set_xticks(np.arange(p_start,p_end,0.3)) 
-        ax.set_xlim(p_start - 0.1, p_end + 0.1)
-        ax.set_ylim(0.0,0.001)
+        ax.set_ylabel(r'|$L_{p, path} - L_{p, geo}|$', fontsize=14)
+        ax.set_xticks(np.arange(p_start,p_end,0.02)) 
+        ax.set_xlim(p_start - 0.01, p_end + 0.01)
+        ax.set_ylim(-0.000001,0.001)
         
         # curve fitting for longest and shortest
         # list to store the data for the shortest and longest path respectively
@@ -461,11 +464,12 @@ class Plots:
                      label = "{} Metric Path Fit".format(path_names[m]))
             
 
-        plt.hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
+        #plt.hlines(0,0,4.1, linestyle=':', color='k', alpha=0.5)
+        plt.vlines(1, -10, 10, linestyle=':', color='k', alpha=0.5)
         
-        plt.errorbar(p_vals, sh_diffs, fmt='x', capsize = 5, yerr = sh_errors,\
+        plt.errorbar(p_vals, sh_diffs, fmt='x', markersize = 5, capsize = 5, yerr = sh_errors,\
                      label='Shortest Metric Path')
-        plt.errorbar(p_vals, lo_diffs, fmt='x', capsize = 5, yerr = lo_errors,\
+        plt.errorbar(p_vals, lo_diffs, fmt='x', markersize = 5, capsize = 5, yerr = lo_errors,\
                      label='Longest Metric Path')
         plt.legend()
         
