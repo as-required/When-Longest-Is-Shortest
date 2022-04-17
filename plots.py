@@ -287,7 +287,7 @@ class Plots:
             ax.spines['top'].set_visible(False)
             ax.set_xlabel('$p$', fontsize=14)
             # note set the ylabel to only be for the avg as that is what we will use
-            ax.set_ylabel(r'Average $(\Delta_L - \Delta_S)}$', fontsize=14)
+            ax.set_ylabel(r'Mean $(\Delta_{L, \mathrm{avg}} - \Delta_{S,\mathrm{avg}})$', fontsize=14)
             #ax.set_xticks(np.arange(p_start,p_end,0.5)) 
             ax.set_xticks(np.arange(0,2.1,0.5))
             ax.set_xlim(p_start - 0.1, p_end + 0.1)
@@ -314,12 +314,18 @@ class Plots:
             plt.hlines(0,0,2.1, linestyle=':', color='k', alpha=0.5)
             plt.vlines(1, -0.3, 0.3, linestyle=':', color='k', alpha=0.5)
             plt.plot(p_vals, mean_perps, marker='x', linestyle='', color='C30', label='Average perps')
-            plt.errorbar(p_vals, mean_perps, yerr=errors, fmt='.', markersize = 1,\
+            plt.errorbar(p_vals, mean_perps, yerr=errors, fmt='.', markersize = 2,\
                          color='C30', capsize=5)
             
             plt.savefig('ResultPlot2_{}_perp.png'.format(perp_type), dpi=500, bbox_inches='tight')
             plt.show()
-            
+            # making a dict to output each pvalue and its perp dist value as dict
+            p_mean_perp_dict = {}
+            for key in p_vals:
+                for value in mean_perps:
+                    p_mean_perp_dict[key] = value
+                    
+            print('Mean {} Perp Dist for each p:'.format(perp_type), p_mean_perp_dict)
             #print('Mean {} Perp Dist for each p:'.format(perp_type), mean_perps)
             #print('Uncertainties on mean {} Perp Dist for each p:'.format(perp_type), errors)
             
@@ -361,7 +367,7 @@ class Plots:
                 axs[m].errorbar(p_vals, mean_perps_list[m], yerr=errors_list[m], fmt='o', color='C30', capsize=5)
                 
                 
-                #print('Mean {} perps for each p:'.format(perp_types_list[m]), mean_perps_list[m])
+                print('Mean {} perps for each p:'.format(perp_types_list[m]), mean_perps_list[m])
                 #print('Uncertainties on mean {} perps for each p:'.format(perp_types_list[m]), errors_list[m])
             plt.savefig('ResultPlot2_{}_perp.png'.format(perp_type), dpi=500, bbox_inches='tight')
             plt.show()
@@ -422,7 +428,7 @@ class Plots:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_xlabel('$p$', fontsize=14)
-        ax.set_ylabel(r'|$L_{p, path} - L_{p, geo}|$', fontsize=14)
+        ax.set_ylabel(r'Mean $|L_{p, path} - L_{p, geo}|$', fontsize=14)
         ax.set_xticks(np.arange(p_start,p_end,0.02)) 
         ax.set_xlim(p_start - 0.01, p_end + 0.01)
         ax.set_ylim(-0.000001,0.001)
