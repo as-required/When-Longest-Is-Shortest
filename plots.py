@@ -120,13 +120,83 @@ class Plots:
             # curve fitting
             popt, pcov = curve_fit(arbitrary_poly, p_vals, mean_deltas, sigma = errors,\
                                    p0 = np.ones(poly_order))
+# =============================================================================
+#             log fit curve fit (a lot worse than polynomial fit)
+# =============================================================================
+            """def log(x, a, b, c): # x-shifted log
+                return a*np.log(x + b)+c
+            popt_log, pcov_log = curve_fit(log, p_vals, mean_deltas, sigma = errors,\
+                                   p0 = [1,0,0])
+
+            # axis values for the curve fit
+            x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
+            log_fit = log(x_vals, *popt_log)
+            #plot
+            plt.plot(x_vals, log_fit, linestyle='-', color='C30')
+
+            plt.hlines(0,0,10, linestyle=':', color='k', alpha=0.5)
+            plt.vlines(1,-10, 10, linestyle=':', color='k', alpha=0.5)
+            plt.plot(p_vals, mean_deltas, marker='x', linestyle='', color='C30', label='Average $\delta$')
+            plt.errorbar(p_vals, mean_deltas, yerr=errors, fmt='.', color='C30', capsize=5, markersize= 1)
             
-            # Find roots of polynomial
+            plt.savefig('ResultPlot1_{}_delta.png'.format(delta_type), dpi=500, bbox_inches='tight')
+            plt.show()"""
+# =============================================================================
+#             log fit  polyfit   (bad)
+# =============================================================================
+            """fit, cov = np.polyfit(np.log(p_vals), mean_deltas, w = np.reciprocal(errors), deg = 1, cov = 1)
+            pfit = np.poly1d(fit)
+            p_intercept_log = -fit[1]/fit[0]
+            
+            print("p-intercept from log fit is", p_intercept_log)
+            #plot
+            plt.plot(np.log(p_vals), mean_deltas, linestyle='-', color='C30')
+
+            plt.hlines(0,0,10, linestyle=':', color='k', alpha=0.5)
+            plt.vlines(1,-10, 10, linestyle=':', color='k', alpha=0.5)
+            plt.plot(np.log(p_vals), pfit(np.log(p_vals)), marker='x', linestyle='', color='C30', label='Average $\delta$')
+            plt.errorbar(p_vals, mean_deltas, yerr=errors, fmt='.', color='C30', capsize=5, markersize= 1)
+            
+            plt.savefig('ResultPlot1_{}_delta.png'.format(delta_type), dpi=500, bbox_inches='tight')
+            plt.show()"""
+            # =============================================================================
+            #             jackknife for p-intercept unc
+            # =============================================================================
+                        
+            real_roots_jackknife_list = []
+            for i in range(len(p_vals)):
+                # p_vals, diffs and errors with ith element removed
+                p_vals_knife = np.delete(p_vals, i)
+                mean_deltas_knife = np.delete(mean_deltas, i)
+                errors_knife = np.delete(errors, i)
+                
+                popt_i, pcov_i = curve_fit(arbitrary_poly, p_vals_knife, mean_deltas_knife, sigma = errors_knife,\
+                                       p0 = np.ones(poly_order))
+                    
+                # Find roots of polynomial
+             
+                roots_i = np.roots(popt_i)
+                real_roots_i = [j for j in roots_i if j.imag == 0]
+                np.real(real_roots_i)
+                # keep only the root near 1
+                for k in real_roots_i:
+                    if np.abs(k-1) > 0.001:
+                        real_roots_i = np.delete(real_roots_i,np.where(real_roots_i== k)) # must do this way as real_roots_i is a numpy array
+                real_roots_jackknife_list.append(real_roots_i)
+            # now find mean error in the mean of the p-intercepts 
+            # flatten the lists
+            real_roots_jackknife_list_flat = [item for sublist in real_roots_jackknife_list for item in sublist]
+            
+            jackknife_mean = np.mean(real_roots_jackknife_list_flat)
+            jackknife_error = sem(real_roots_jackknife_list_flat) # finding standard error in the mean
+            print('p-intercept:', np.real(jackknife_mean), "+-", np.real(jackknife_error))
+            
+            """# Find roots of polynomial
             #poly = [popt[0], popt[1], popt[2], popt[3], popt[4]]
             roots = np.roots(popt)
             real_roots = [i for i in roots if i.imag == 0]
             #x_ints = [i for i in real_roots if i > 0]
-            print('x-intercept for {}:'.format(delta_type), np.real(real_roots))
+            print('x-intercept for {}:'.format(delta_type), np.real(real_roots))"""
             
             # axis values for the curve fit
             x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
@@ -296,13 +366,45 @@ class Plots:
             # curve fitting
             popt, pcov = curve_fit(arbitrary_poly, p_vals, mean_perps, sigma = errors,\
                                    p0 = np.ones(poly_order))
+                
+            # =============================================================================
+            #             jackknife for p-intercept unc
+            # =============================================================================
+                        
+            real_roots_jackknife_list = []
+            for i in range(len(p_vals)):
+                # p_vals, diffs and errors with ith element removed
+                p_vals_knife = np.delete(p_vals, i)
+                mean_perps_knife = np.delete(mean_perps, i)
+                errors_knife = np.delete(errors, i)
+                
+                popt_i, pcov_i = curve_fit(arbitrary_poly, p_vals_knife, mean_perps_knife, sigma = errors_knife,\
+                                       p0 = np.ones(poly_order))
+                    
+                # Find roots of polynomial
+             
+                roots_i = np.roots(popt_i)
+                real_roots_i = [j for j in roots_i if j.imag == 0]
+                np.real(real_roots_i)
+                # keep only the root near 1
+                for k in real_roots_i:
+                    if np.abs(k-1) > 0.001:
+                        real_roots_i = np.delete(real_roots_i,np.where(real_roots_i== k)) # must do this way as real_roots_i is a numpy array
+                real_roots_jackknife_list.append(real_roots_i)
+            # now find mean error in the mean of the p-intercepts 
+            # flatten the lists
+            real_roots_jackknife_list_flat = [item for sublist in real_roots_jackknife_list for item in sublist]
             
-            # Find roots of polynomial
+            jackknife_mean = np.mean(real_roots_jackknife_list_flat)
+            jackknife_error = sem(real_roots_jackknife_list_flat) # finding standard error in the mean
+            print('p-intercept:', np.real(jackknife_mean), "+-", np.real(jackknife_error))
+            
+            """# Find roots of polynomial
             #poly = [popt[0], popt[1], popt[2], popt[3], popt[4]]
             roots = np.roots(popt)
             real_roots = [i for i in roots if i.imag == 0]
             #x_ints = [i for i in real_roots if i > 0]
-            print('x-intercept for {}:'.format(perp_type), np.real(real_roots))
+            print('x-intercept for {}:'.format(perp_type), np.real(real_roots))"""
             
             # axis values for the curve fit
             x_vals = np.linspace(p_vals[0], p_vals[-1], 50)
@@ -431,7 +533,7 @@ class Plots:
         ax.set_ylabel(r'Mean $|L_{p, path} - L_{p, geo}|$', fontsize=14)
         ax.set_xticks(np.arange(p_start,p_end,0.02)) 
         ax.set_xlim(p_start - 0.01, p_end + 0.01)
-        ax.set_ylim(-0.000001,0.001)
+        ax.set_ylim(-0.000001,0.0001)
         
         # curve fitting for longest and shortest
         # list to store the data for the shortest and longest path respectively
@@ -445,18 +547,56 @@ class Plots:
         x_vals_list = []
         y_vals_list = []
         
+        #iterating for shortest and longest path diffs
         for m in range(len(path_diffs_list)):
             popt_m, pcov_m = curve_fit(arbitrary_poly, p_vals, path_diffs_list[m], sigma = path_errors_list[m],\
                                    p0 = np.ones(poly_order))
             
             popt_list.append(popt_m)
             pcov_list.append(pcov_m)
+            
+# =============================================================================
+#             jackknife for p-intercept unc
+# =============================================================================
+            
+            real_roots_jackknife_list = []
+            for i in range(len(p_vals)):
+                # p_vals, diffs and errors with ith element removed
+                p_vals_knife = np.delete(p_vals, i)
+                path_diffs_knife = np.delete(path_diffs_list[m], i)
+                path_errors_knife = np.delete(path_errors_list[m], i)
+                
+                popt_i, pcov_i = curve_fit(arbitrary_poly, p_vals_knife, path_diffs_knife, sigma = path_errors_knife,\
+                                       p0 = np.ones(poly_order))
+                    
+                # Find roots of polynomial
+             
+                roots_i = np.roots(popt_i)
+                real_roots_i = [j for j in roots_i if j.imag == 0]
+                np.real(real_roots_i)
+                # keep only the root near 1
+                for k in real_roots_i:
+                    if np.abs(k-1) > 0.01:
+                        real_roots_i = np.delete(real_roots_i,np.where(real_roots_i== k)) # must do this way as real_roots_i is a numpy array
+                real_roots_jackknife_list.append(real_roots_i)
+            # now find mean error in the mean of the p-intercepts 
+            # flatten the lists
+            real_roots_jackknife_list_flat = [item for sublist in real_roots_jackknife_list for item in sublist]
+            
+            jackknife_mean = np.mean(real_roots_jackknife_list_flat)
+            jackknife_error = sem(real_roots_jackknife_list_flat) # finding standard error in the mean
+            print('p-intercept for {}:'.format(path_names[m]), np.real(jackknife_mean), "+-", np.real(jackknife_error))
         
-            # Find roots of polynomial
+            """# Find roots of polynomial
         
             roots_m = np.roots(popt_m)
             real_roots_m = [i for i in roots_m if i.imag == 0]
-            print('x-intercept for {}:'.format(path_names[m]), np.real(real_roots_m))
+            print('x-intercept for {}:'.format(path_names[m]), np.real(real_roots_m))"""
+        
+# =============================================================================
+#         
+# =============================================================================
+        
         
             # axis values for the curve fit
             x_vals_m = np.linspace(p_vals[0], p_vals[-1], 50)
@@ -464,6 +604,7 @@ class Plots:
             
             x_vals_list.append(x_vals_m)
             y_vals_list.append(y_vals_m)
+            
         
         #plot
             plt.plot(x_vals_m, y_vals_m, linestyle='-',\
