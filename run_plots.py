@@ -15,7 +15,7 @@ plotter = pls.Plots()
 
 #%% delta vs p "all"
 
-#plotter.delta_vs_p(p_start = 0.01, p_end = 4, p_step = 0.1, nodes = 100, trials = 100, delta_type = "avg", radius = 1e100)
+#plotter.delta_vs_p(p_start = 0.01, p_end = 4, p_step = 0.1, nodes = 10, trials = 50,poly_order=9, delta_type = "avg", radius = 1e100)
 
 #p_start = 0.01, p_end = 4, p_step = 0.1, nodes = 100, trials = 100:
 #Time taken: 1290.1173989772797
@@ -36,8 +36,30 @@ Time taken: 1331.1540732383728
 avg delta_3.91 = 0.0850739936478105 so triangle inequality: True
 p-intercept: 0.9998716468355326 +- 1.2042735034018568e-05
 """
+
+"""
+p_start = 0.01, p_end = 4, p_step = 0.1, nodes = 100, trials = 50, delta_type = "avg", radius = 1e100
+Time taken: 645.1741318702698
+avg delta_3.91 = 0.07904317000221815 so triangle inequality: True
+p-intercept: 0.9998673378881177 +- 1.2077586061665216e-05
+"""
+
+"""
+p_start = 0.01, p_end = 4, p_step = 0.1, nodes = 50, trials = 50, delta_type = "avg", radius = 1e100
+Time taken: 118.05519819259644
+avg delta_3.91 = 0.07861505640369768 so triangle inequality: True
+p-intercept: 0.9999264442056566 +- 1.1908553341176954e-05
+6.18 std away
+"""
+
+"""
+p_start = 0.01, p_end = 4, p_step = 0.1, nodes = 100, trials = 50,poly_order=15, delta_type = "avg", radius = 1e100
+Time taken: 633.6864702701569
+avg delta_3.91 = 0.07904317000221815 so triangle inequality: True
+p-intercept: 0.9994903005623136 +- 5.228447087961402e-05 sds away: 9.748581732040662
+"""
 #%% plot 2 single avg
-plotter.perp_vs_p(p_start = 0.01, p_step= 0.01, trials = 100, nodes = 100, poly_order = 25, radius =1e100)
+#plotter.perp_vs_p(p_start = 0.01, p_step= 0.01, trials = 50, nodes = 100, poly_order = 25, radius =1e100)
 
 # for p_start = 0.01, p_step= 0.01, trials = 50, nodes = 10, poly_order = 25, radius =1e100
 # 
@@ -57,6 +79,15 @@ The maximum difference in longest and shortest metric path deviations from the g
 p-intercept: 0.9995134950631189 +- 0.00027284965513214366 DOESN'T AGREEE'
 
 """
+
+"""
+p_start = 0.01, p_step= 0.01, trials = 50, nodes = 100, poly_order = 25, radius =1e100)
+Time taken: 1379.8279271125793
+The average difference in longest and shortest metric path deviations from the geodesic is: 0.11374405897436954
+The minimum difference in longest and shortest metric path deviations from the geodesic is: 0.0
+The maximum difference in longest and shortest metric path deviations from the geodesic is: 0.2602504745012496
+p-intercept: 1.000063646650929 +- 6.787872323058014e-05
+"""
 #%% plot 2 single max
 
 #plotter.perp_vs_p(p_start = 0.4, p_step= 0.01, trials = 50, nodes = 10, poly_order = 16, radius =1923, perp_type="max")
@@ -68,7 +99,7 @@ p-intercept: 0.9995134950631189 +- 0.00027284965513214366 DOESN'T AGREEE'
 
 #max and min seem to give nonsense (min just gives 0 even though I've set geodesic = 0 ?)
 #%% plot 3 metric path
-#plotter.length_vs_p(p_start = 0.9, p_end = 1.1, p_step = 0.005, nodes = 100, poly_order = 16, trials = 100, radius = 1e100)
+plotter.length_vs_p(p_start = 0.9, p_end = 1.1, p_step = 0.005, nodes = 50, poly_order = 10, trials = 50, radius = 1e100)
 
 # =============================================================================
 # both have intercepts at exactly 1 
@@ -119,5 +150,40 @@ p-intercept for Shortest: 0.9998642842263675 +- 0.0001357134698645545
 /opt/anaconda3/lib/python3.8/site-packages/scipy/optimize/minpack.py:833: OptimizeWarning: Covariance of the parameters could not be estimated
   warnings.warn('Covariance of the parameters could not be estimated',
 p-intercept for Longest: 1.0001367206592697 +- 0.00013672066288506404
+
+"""
+
+"""
+p_start = 0.9, p_end = 1.1, p_step = 0.005, nodes = 50, poly_order = 16, trials = 50, radius = 1e100
+
+Time taken: 203.37418603897095
+Difference between geodesic and shortest metric path: 6.362956828098731e-10
+Difference between geodesic and longest metric path: 0.11352658463866261
+Difference between geodesic and shortest metric path: 6.362956828098731e-10
+Difference between geodesic and longest metric path: 0.11352658463866261
+/opt/anaconda3/lib/python3.8/site-packages/scipy/optimize/minpack.py:833: OptimizeWarning: Covariance of the parameters could not be estimated
+  warnings.warn('Covariance of the parameters could not be estimated',
+p-intercept for Shortest: 0.9998623996904186 +- 0.0001376002323208757
+/opt/anaconda3/lib/python3.8/site-packages/scipy/optimize/minpack.py:833: OptimizeWarning: Covariance of the parameters could not be estimated
+  warnings.warn('Covariance of the parameters could not be estimated',
+p-intercept for Longest: 1.0001381476166193 +- 0.00013814602694094168
+"""
+
+"""
+p_start = 0.9, p_end = 1.1, p_step = 0.005, nodes = 100, poly_order = 10, trials = 50, radius = 1e100
+Time taken: 316.0953149795532
+Difference between geodesic and shortest metric path: 9.902491100666211e-06
+Difference between geodesic and longest metric path: 0.10825631996885776
+Difference between geodesic and shortest metric path: 9.902491100666211e-06
+Difference between geodesic and longest metric path: 0.10825631996885776
+/opt/anaconda3/lib/python3.8/site-packages/scipy/optimize/minpack.py:833: OptimizeWarning: Covariance of the parameters could not be estimated
+  warnings.warn('Covariance of the parameters could not be estimated',
+p-intercept for Shortest: 0.999862475751859 +- 0.00013752424885643555
+/opt/anaconda3/lib/python3.8/site-packages/scipy/optimize/minpack.py:833: OptimizeWarning: Covariance of the parameters could not be estimated
+  warnings.warn('Covariance of the parameters could not be estimated',
+p-intercept for Longest: 1.0001427875302373 +- 0.00014278752789586693
+
+
+
 
 """

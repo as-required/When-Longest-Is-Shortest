@@ -19,6 +19,9 @@ def quartic(x, a0, a1, a2, a3, a4): # this is an inverse quartic
 def arbitrary_poly(x, *params):
     return sum([p*(x**i) for i, p in enumerate(params)])
 
+def arbitrary_poly_around1(x, *params):
+    return sum([p*((x-1)**i) for i, p in enumerate(params)])
+
 class Plots:
     def __init__(self):
         pass
@@ -189,7 +192,9 @@ class Plots:
             
             jackknife_mean = np.mean(real_roots_jackknife_list_flat)
             jackknife_error = sem(real_roots_jackknife_list_flat) # finding standard error in the mean
-            print('p-intercept:', np.real(jackknife_mean), "+-", np.real(jackknife_error))
+            print('p-intercept:', np.real(jackknife_mean), "+-", np.real(jackknife_error), "sds away:",\
+                  (1-np.real(jackknife_mean))/np.real(jackknife_error))
+                  
             
             """# Find roots of polynomial
             #poly = [popt[0], popt[1], popt[2], popt[3], popt[4]]
@@ -533,6 +538,7 @@ class Plots:
         ax.set_ylabel(r'Mean $|L_{p, path} - L_{p, geo}|$', fontsize=14)
         ax.set_xticks(np.arange(p_start,p_end,0.02)) 
         ax.set_xlim(p_start - 0.01, p_end + 0.01)
+        #ax.set_xlim(0.96, 1.04)
         ax.set_ylim(-0.000001,0.0001)
         
         # curve fitting for longest and shortest
@@ -618,7 +624,7 @@ class Plots:
                      label='Shortest Metric Path')
         plt.errorbar(p_vals, lo_diffs, fmt='x', markersize = 5, capsize = 5, yerr = lo_errors,\
                      label='Longest Metric Path')
-        plt.legend()
+        plt.legend(loc="upper left")
         
         plt.savefig('ResultPlot3_{}_length.png'.format(path_type), dpi=500, bbox_inches='tight')
         plt.show()

@@ -74,9 +74,20 @@ plt.show()
 #%% Manhattan Space Visualisation
 
 edges2 = [ [0,2], [2,1], [0,3], [3,4], [4,5], [5,1]]
+edges2_tuple = [tuple(x) for x in edges2]
 pos2 = {0: (0.0,0.0), 1: (1.0,1.0), 2: (0.0,1.0), 3: (0.7,0.0), 4: (0.7,0.3), 5: (1.0,0.3)}
 edge_colours2 = ['C2', 'C3', 'C2', 'C3', 'C3', 'C3']
 
+def L_1(point_1, point_2):
+    sigma = (np.abs(point_1[0] - point_2[0])) + (np.abs(point_1[1] - point_2[1]))
+    
+    return sigma
+
+edge_weights = {}
+
+for i in edges2_tuple:
+    dist = L_1(pos2[i[0]], pos2[i[1]])
+    edge_weights[i] = round(dist,2)
 G2 = nx.DiGraph()
 G2.add_edges_from(edges2)
 
@@ -86,6 +97,10 @@ plt.axis('off')
 
 nx.draw_networkx(G2, pos2, arrows=1, edge_color=edge_colours2, width=1, linewidths=1, node_size=500, \
                  node_color='black', font_color='white', arrowsize=20)
+nx.draw_networkx_edge_labels(G2, pos2, edge_labels = edge_weights, ax = ax)
+
     
 plt.savefig('ManhattanSpace.png', dpi=500, bbox_inches='tight')
 plt.show()
+#%% Manhattan space visualisation with weights
+
